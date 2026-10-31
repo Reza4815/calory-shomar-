@@ -1,7 +1,7 @@
 "use client";
 
 import { Minus, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   IconBadge,
   PrimaryButton,
@@ -29,6 +29,12 @@ export function FoodSheet({
   const [unit, setUnit] = useState<QtyUnit>("serving");
   const addFoodEntry = useNutritionStore((s) => s.addFoodEntry);
 
+  // ریست کردن مقادیر وقتی غذا عوض می‌شود
+  useEffect(() => {
+    setQty(1);
+    setUnit("serving");
+  }, [food?.id]);
+
   const grams = useMemo(() => {
     if (!food) return 0;
     return unit === "serving" ? Math.round(food.grams * qty) : Math.round(qty);
@@ -49,77 +55,70 @@ export function FoodSheet({
       description: food.name,
       tone: "green",
     });
-    reset();
     onClose();
   };
 
-  const reset = () => {
-    setQty(1);
-    setUnit("serving");
-  };
-
-  if (!food)
-    return (
-      <Sheet open={false} onClose={onClose}>
-        {null}
-      </Sheet>
-    );
+  // اگر غذایی انتخاب نشده، هیچی رندر نکن (جلوگیری از هنگ کردن)
+  if (!food) return null;
 
   const macros = [
     {
       label: "کالری",
-      value: `${fa(scale(food.calories))} کالری`,
+      value: `${fa(scale(food.calories))}`,
       color: "#F2A94B",
+      unit: "کالری",
     },
     {
       label: "پروتئین",
-      value: `${fa(scale(food.protein))} گرم`,
+      value: `${fa(scale(food.protein))}`,
       color: "#F16B68",
+      unit: "گرم",
     },
     {
       label: "کربوهیدرات",
-      value: `${fa(scale(food.carbs))} گرم`,
+      value: `${fa(scale(food.carbs))}`,
       color: "#E8C15A",
+      unit: "گرم",
     },
-    { label: "چربی", value: `${fa(scale(food.fat))} گرم`, color: "#9B78E8" },
+    {
+      label: "چربی",
+      value: `${fa(scale(food.fat))}`,
+      color: "#9B78E8",
+      unit: "گرم",
+    },
   ];
 
   return (
     <Sheet
       open
-      onClose={() => {
-        reset();
-        onClose();
-      }}
+      onClose={onClose}
       title={food.name}
       subtitle={`هر ${food.serving} · ${fa(food.grams)} گرم`}
     >
       <div className="flex flex-col items-center pt-1">
         <IconBadge icon={foodIcon(food.tag, 30)} tone="green" size={72} />
 
-        {/* macro tiles */}
         <div className="mt-5 grid w-full grid-cols-4 gap-2">
           {macros.map((m) => (
             <div
               key={m.label}
-              className="rounded-2xl border border-border/50 bg-card px-1.5 py-3 text-center"
+              className="rounded-2xl border border-white/[0.03] bg-[#16181c] px-1.5 py-3 text-center"
             >
               <p
                 className="text-[13px] font-extrabold tnum"
                 style={{ color: m.color }}
               >
-                {m.value.split(" ")[0]}
+                {m.value}
               </p>
-              <p className="mt-0.5 text-[10px] text-muted">
-                {m.label === "کالری" ? "کالری" : `${m.label} (گرم)`}
+              <p className="mt-0.5 text-[10px] text-[#8b8e98]">
+                {m.unit === "کالری" ? "کالری" : `${m.label} (گرم)`}
               </p>
             </div>
           ))}
         </div>
 
-        {/* quantity */}
         <div className="mt-6 w-full">
-          <p className="mb-3 text-center text-xs font-semibold text-sub">
+          <p className="mb-3 text-center text-xs font-semibold text-[#8b8e98]">
             مقدار
           </p>
           <div className="flex items-center justify-center gap-6">
@@ -134,7 +133,7 @@ export function FoodSheet({
               <p className="text-2xl font-extrabold tnum">
                 {unit === "serving" ? fa(qty, 1) : fa(grams)}
               </p>
-              <p className="mt-0.5 text-[11px] text-muted">
+              <p className="mt-0.5 text-[11px] text-[#8b8e98]">
                 {unit === "serving" ? "وعده" : "گرم"}
               </p>
             </div>
@@ -159,7 +158,7 @@ export function FoodSheet({
           />
         </div>
 
-        <p className="mt-4 text-center text-[10.5px] leading-5 text-muted">
+        <p className="mt-4 text-center text-[10.5px] leading-5 text-[#8b8e98]">
           مقادیر تغذیه‌ای تقریبی‌اند و ممکن است با دستور پخت شما متفاوت باشند.
         </p>
 
