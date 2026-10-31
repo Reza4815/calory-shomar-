@@ -29,7 +29,6 @@ export function FoodSheet({
   const [unit, setUnit] = useState<QtyUnit>("serving");
   const addFoodEntry = useNutritionStore((s) => s.addFoodEntry);
 
-  // ریست کردن مقادیر وقتی غذا عوض می‌شود
   useEffect(() => {
     setQty(1);
     setUnit("serving");
@@ -58,7 +57,6 @@ export function FoodSheet({
     onClose();
   };
 
-  // اگر غذایی انتخاب نشده، هیچی رندر نکن (جلوگیری از هنگ کردن)
   if (!food) return null;
 
   const macros = [
@@ -150,7 +148,7 @@ export function FoodSheet({
             id="qty-unit"
             className="mt-5"
             value={unit}
-            onChange={(v) => setUnit(v)}
+            onChange={(v: any) => setUnit(v)}
             options={[
               { value: "serving", label: "وعده" },
               { value: "gram", label: "گرم" },

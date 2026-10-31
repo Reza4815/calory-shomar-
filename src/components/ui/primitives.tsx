@@ -61,7 +61,7 @@ export function Card({
   );
 }
 
-/* ---------- Icon badge (circular tinted container) ---------- */
+/* ---------- Icon badge ---------- */
 
 const TINTS: Record<string, string> = {
   green: "rgba(32, 201, 138, 0.14)",
@@ -116,7 +116,7 @@ export function IconBadge({
   );
 }
 
-/* ---------- Circular progress ring ---------- */
+/* ---------- Progress Components ---------- */
 
 export function ProgressRing({
   size = 88,
@@ -125,14 +125,7 @@ export function ProgressRing({
   color = "#20C98A",
   track = "rgba(48, 55, 68, 0.55)",
   children,
-}: {
-  size?: number;
-  stroke?: number;
-  progress: number; // 0..1
-  color?: string;
-  track?: string;
-  children?: ReactNode;
-}) {
+}: any) {
   const reduce = useReducedMotion();
   const p = Math.min(1, Math.max(0, progress));
   const r = (size - stroke) / 2;
@@ -179,21 +172,13 @@ export function ProgressRing({
   );
 }
 
-/* ---------- Semicircular (arc) progress — 252° with bottom gap ---------- */
-
 export function ProgressArc({
   size = 220,
   stroke = 14,
   progress,
   color = "#20C98A",
   track = "rgba(48, 55, 68, 0.5)",
-}: {
-  size?: number;
-  stroke?: number;
-  progress: number;
-  color?: string;
-  track?: string;
-}) {
+}: any) {
   const reduce = useReducedMotion();
   const p = Math.min(1, Math.max(0, progress));
   const r = (size - stroke) / 2 - 4;
@@ -236,59 +221,35 @@ export function ProgressArc({
   );
 }
 
-/* ---------- Segmented control ---------- */
-
-export function Segmented<T extends string>({
-  id,
-  options,
-  value,
-  onChange,
-  accent = "#20C98A",
-  size = "md",
+export function ProgressBar({
+  progress,
+  color = "#20C98A",
   className,
-}: {
-  id: string;
-  options: { value: T; label: string }[];
-  value: T;
-  onChange: (v: T) => void;
-  accent?: string;
-  size?: "sm" | "md";
-  className?: string;
-}) {
+  height = 8,
+}: any) {
+  const reduce = useReducedMotion();
+  const p = Math.min(1, Math.max(0, progress)) * 100;
   return (
-    <div className={cx("flex rounded-full bg-surface p-1", className)}>
-      {options.map((o) => {
-        const active = o.value === value;
-        return (
-          <button
-            key={o.value}
-            type="button"
-            onClick={() => onChange(o.value)}
-            className={cx(
-              "relative flex-1 whitespace-nowrap rounded-full font-medium transition-colors",
-              size === "sm" ? "px-3 py-1.5 text-xs" : "px-3 py-2.5 text-sm",
-              active ? "text-[#05130D]" : "text-sub",
-            )}
-          >
-            {active && (
-              <motion.span
-                layoutId={`seg-${id}`}
-                className="absolute inset-0 rounded-full"
-                style={{ background: accent }}
-                transition={{ type: "spring", stiffness: 420, damping: 34 }}
-              />
-            )}
-            <span className={cx("relative z-10", active && "font-bold")}>
-              {o.label}
-            </span>
-          </button>
-        );
-      })}
+    <div
+      className={cx("w-full overflow-hidden rounded-full", className)}
+      style={{ height, background: "rgba(48, 55, 68, 0.55)" }}
+    >
+      <motion.div
+        className="h-full rounded-full"
+        initial={false}
+        animate={{ width: `${p}%` }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 80, damping: 20 }
+        }
+        style={{ background: color, boxShadow: `0 0 12px ${color}66` }}
+      />
     </div>
   );
 }
 
-/* ---------- Round stepper button ---------- */
+/* ---------- Buttons & Inputs ---------- */
 
 export function RoundButton({
   onClick,
@@ -296,13 +257,7 @@ export function RoundButton({
   tone = "green",
   size = 44,
   label,
-}: {
-  onClick: () => void;
-  icon: ReactNode;
-  tone?: "green" | "blue" | "purple" | "sub" | "outline";
-  size?: number;
-  label: string;
-}) {
+}: any) {
   const reduce = useReducedMotion();
   const styles: Record<string, React.CSSProperties> = {
     green: {
@@ -345,21 +300,13 @@ export function RoundButton({
   );
 }
 
-/* ---------- Primary button ---------- */
-
 export function PrimaryButton({
   children,
   onClick,
   className,
   tone = "green",
   disabled,
-}: {
-  children: ReactNode;
-  onClick?: () => void;
-  className?: string;
-  tone?: "green" | "blue";
-  disabled?: boolean;
-}) {
+}: any) {
   const reduce = useReducedMotion();
   return (
     <motion.button
@@ -380,17 +327,7 @@ export function PrimaryButton({
   );
 }
 
-/* ---------- Section title ---------- */
-
-export function SectionTitle({
-  title,
-  badge,
-  action,
-}: {
-  title: string;
-  badge?: string;
-  action?: ReactNode;
-}) {
+export function SectionTitle({ title, badge, action }: any) {
   return (
     <div className="mb-3 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -406,42 +343,42 @@ export function SectionTitle({
   );
 }
 
-/* ---------- Progress bar ---------- */
+/* ---------- Page body (Full Screen + Ambient Glow + PWA Safe Area) ---------- */
 
-export function ProgressBar({
-  progress,
-  color = "#20C98A",
+export function PageBody({
+  children,
   className,
-  height = 8,
 }: {
-  progress: number;
-  color?: string;
+  children: ReactNode;
   className?: string;
-  height?: number;
 }) {
   const reduce = useReducedMotion();
-  const p = Math.min(1, Math.max(0, progress)) * 100;
   return (
-    <div
-      className={cx("w-full overflow-hidden rounded-full", className)}
-      style={{ height, background: "rgba(48, 55, 68, 0.55)" }}
+    <motion.main
+      initial={reduce ? false : { opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      // حذف max-w برای فول اسکرین شدن در وب
+      className={cx(
+        "relative w-full min-h-screen bg-[#0b0c10] overflow-hidden pb-36 pt-[env(safe-area-inset-top)]",
+        className,
+      )}
     >
-      <motion.div
-        className="h-full rounded-full"
-        initial={false}
-        animate={{ width: `${p}%` }}
-        transition={
-          reduce
-            ? { duration: 0 }
-            : { type: "spring", stiffness: 80, damping: 20 }
-        }
-        style={{ background: color, boxShadow: `0 0 12px ${color}66` }}
-      />
-    </div>
+      {/* Ambient glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden transform-gpu"
+      >
+        <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px] will-change-transform" />
+        <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px] will-change-transform" />
+        <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px] will-change-transform" />
+      </div>
+
+      {/* محتوا با پدینگ داخلی تا از لبه‌ها فاصله بگیرد */}
+      <div className="relative z-10 px-4">{children}</div>
+    </motion.main>
   );
 }
-
-/* ---------- Empty state ---------- */
 
 export function EmptyState({
   icon,
@@ -461,38 +398,44 @@ export function EmptyState({
   );
 }
 
-/* ---------- Page body (entrance animation + ambient glow) ---------- */
-
-export function PageBody({
-  children,
+export function Segmented({
+  id,
+  options,
+  value,
+  onChange,
+  accent = "#20C98A",
+  size = "md",
   className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  const reduce = useReducedMotion();
+}: any) {
   return (
-    <motion.main
-      initial={reduce ? false : { opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className={cx("relative px-4 pb-36", className)}
-    >
-      {/* Ambient glow — subtle colored blurs behind the content */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-      >
-        {/* هاله سبز (بالا سمت راست) - حفظ شد */}
-        <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px]" />
-
-        {/* هاله قرمز جدید (پایین سمت راست) */}
-        <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px]" />
-
-        {/* هاله بنفش درخشان (پایین سمت چپ) */}
-        <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px]" />
-      </div>
-      <div className="relative z-10">{children}</div>
-    </motion.main>
+    <div className={cx("flex rounded-full bg-surface p-1", className)}>
+      {options.map((o: any) => {
+        const active = o.value === value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => onChange(o.value)}
+            className={cx(
+              "relative flex-1 whitespace-nowrap rounded-full font-medium transition-colors",
+              size === "sm" ? "px-3 py-1.5 text-xs" : "px-3 py-2.5 text-sm",
+              active ? "text-[#05130D]" : "text-sub",
+            )}
+          >
+            {active && (
+              <motion.span
+                layoutId={`seg-${id}`}
+                className="absolute inset-0 rounded-full"
+                style={{ background: accent }}
+                transition={{ type: "spring", stiffness: 420, damping: 34 }}
+              />
+            )}
+            <span className={cx("relative z-10", active && "font-bold")}>
+              {o.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }

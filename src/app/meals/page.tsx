@@ -68,12 +68,12 @@ function MealRow({ entry, dateKey }: { entry: FoodLogEntry; dateKey: string }) {
 
   return (
     <motion.li
-      layout
       key={entry.id}
-      initial={reduce ? undefined : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0, y: -6 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
+      initial={reduce ? undefined : { opacity: 0, y: 10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.95, height: 0 }}
+      transition={{ duration: 0.25, ease: "easeInOut" }}
+      className="overflow-hidden transform-gpu"
     >
       <div className="flex items-center gap-3 py-2.5">
         <div className="min-w-0 flex-1">
@@ -104,10 +104,8 @@ function MealRow({ entry, dateKey }: { entry: FoodLogEntry; dateKey: string }) {
             </span>
           </p>
         </div>
-
         <button
           type="button"
-          aria-label={`حذف ${entry.name}`}
           onClick={() => removeFoodEntry(dateKey, entry.id)}
           className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sub transition-colors hover:bg-[#ff5c5c]/15 hover:text-[#ff5c5c]"
         >
@@ -149,14 +147,11 @@ function MealSection({
             </p>
           </div>
         </div>
-
         <Link
           href={`/food?meal=${meal}`}
-          aria-label={`افزودن غذا به ${MEAL_LABELS[meal]}`}
           className="flex items-center gap-1.5 rounded-full bg-primary/15 px-3.5 py-2 text-[11.5px] font-bold text-primary transition-transform active:scale-95"
         >
-          <Plus className="h-3.5 w-3.5" strokeWidth={2.6} />
-          افزودن
+          <Plus className="h-3.5 w-3.5" strokeWidth={2.6} /> افزودن
         </Link>
       </div>
 
@@ -177,17 +172,8 @@ function MealSection({
   );
 }
 
-function SummaryCard({ children }: { children: ReactNode }) {
-  return (
-    <Card glow="green" className="flex items-center gap-4 p-5">
-      {children}
-    </Card>
-  );
-}
-
 export default function MealsPage() {
   const key = dayKey();
-
   const entries = useNutritionStore((s) => s.logs[key] ?? NO_ENTRIES);
   const dailyCalories = useProfileStore((s) => s.goals.dailyCalories);
 
@@ -200,27 +186,20 @@ export default function MealsPage() {
       <ScreenHeader title="وعده‌های امروز" subtitle={faFullDate()} />
       <HeaderSpacer />
 
-      {/* 
-        این کانتینر اصلی است. عرض آن w-full است تا نوار پایین به لبه‌ها بچسبد،
-        اما درون آن لایه‌های Glow را قرار دادیم تا زیبایی صفحه اصلی را داشته باشد.
-      */}
-      <div className="w-full min-h-screen bg-[#0b0c10] relative overflow-hidden pb-36">
-        {/* --- لایه‌ی Glow ها --- */}
+      {/* فول اسکرین کردن صفحه */}
+      <div className="w-full min-h-screen bg-[#0b0c10] relative overflow-hidden pb-36 pt-[env(safe-area-inset-top)]">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden transform-gpu"
         >
-          {/* هاله سبز (بالا راست) */}
-          <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px]" />
-          {/* هاله قرمز (پایین راست) */}
-          <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px]" />
-          {/* هاله بنفش (پایین چپ) */}
-          <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px]" />
+          <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px] will-change-transform" />
+          <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px] will-change-transform" />
+          <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px] will-change-transform" />
         </div>
 
-        {/* محتوای اصلی با z-10 تا روی گلوی پس‌زمینه قرار بگیرد */}
-        <main className="relative z-10 mx-auto w-full max-w-md px-4 pt-4">
-          <SummaryCard>
+        {/* کلاس max-w-md mx-auto حذف شد تا در حالت وب فول اسکرین شود */}
+        <main className="relative z-10 w-full px-4 pt-4">
+          <Card glow="green" className="flex items-center gap-4 p-5">
             <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
               <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
             </div>
@@ -239,7 +218,7 @@ export default function MealsPage() {
             <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
               {fa(Math.round(progress * 100))}٪
             </span>
-          </SummaryCard>
+          </Card>
 
           <div className="mt-4 space-y-3.5">
             {MEAL_ORDER.map((meal) => (
