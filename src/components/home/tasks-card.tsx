@@ -10,12 +10,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import {
-  Card,
-  IconBadge,
-  ProgressRing,
-  type Tone,
-} from "@/components/ui/primitives";
+import { IconBadge, ProgressRing, type Tone } from "@/components/ui/primitives";
 import { Sheet } from "@/components/ui/sheet";
 import { WaterControls } from "@/components/water-controls";
 import { cx } from "@/lib/cx";
@@ -79,11 +74,8 @@ export function TasksCard() {
 
   return (
     <>
-      {/* 
-        کلاس‌های زیر دقیقاً کپی‌شده از استایل کارت کالری شماست:
-        bg-[#16181c] rounded-[28px] px-5 pt-6 pb-5 border border-white/[0.03] 
-      */}
-      <div className="bg-[#16181c] rounded-[28px] px-5 pt-6 pb-5 border border-white/[0.03] w-full max-w-[360px] mx-auto mt-4">
+      {/* عرض به w-full تغییر کرد */}
+      <div className="bg-[#16181c] rounded-[28px] px-5 pt-6 pb-5 border border-white/[0.03] w-full mt-4">
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}

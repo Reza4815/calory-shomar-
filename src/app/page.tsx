@@ -35,7 +35,8 @@ export default function HomePage() {
       <TasksCard />
 
       {/* --- بخش: لیست وعده‌های امروز --- */}
-      <div className="mt-6 w-full max-w-[360px] mx-auto">
+      {/* کلاس max-w-[360px] mx-auto حذف شد تا عرض فول بشه */}
+      <div className="mt-6 w-full">
         <div className="flex items-center justify-between px-2 mb-3">
           <h2 className="text-[15px] font-bold text-white flex items-center gap-2">
             <Utensils className="w-4 h-4 text-[#00d287]" />

@@ -1,6 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { fa } from "@/lib/format";
@@ -48,7 +53,7 @@ export function Card({
         glow === "green" && "shadow-[0_0_44px_rgba(32,201,138,0.10)]",
         glow === "blue" && "shadow-[0_0_44px_rgba(85,153,242,0.10)]",
         onClick && "cursor-pointer transition-transform active:scale-[0.985]",
-        className
+        className,
       )}
     >
       {children}
@@ -94,9 +99,17 @@ export function IconBadge({
   return (
     <div
       className={cx("grid shrink-0 place-items-center rounded-full", className)}
-      style={{ width: size, height: size, background: TINTS[tone], color: TINT_TEXT[tone] }}
+      style={{
+        width: size,
+        height: size,
+        background: TINTS[tone],
+        color: TINT_TEXT[tone],
+      }}
     >
-      <span style={{ display: "grid", placeItems: "center" }} data-size={iconSize}>
+      <span
+        style={{ display: "grid", placeItems: "center" }}
+        data-size={iconSize}
+      >
         {icon}
       </span>
     </div>
@@ -128,7 +141,14 @@ export function ProgressRing({
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <g transform={`rotate(-90 ${c} ${c})`}>
-          <circle cx={c} cy={c} r={r} fill="none" stroke={track} strokeWidth={stroke} />
+          <circle
+            cx={c}
+            cy={c}
+            r={r}
+            fill="none"
+            stroke={track}
+            strokeWidth={stroke}
+          />
           <motion.circle
             cx={c}
             cy={c}
@@ -141,13 +161,19 @@ export function ProgressRing({
             strokeDasharray="100 100"
             initial={false}
             animate={{ strokeDashoffset: 100 * (1 - p) }}
-            transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 60, damping: 18 }}
+            transition={
+              reduce
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 60, damping: 18 }
+            }
             style={{ filter: `drop-shadow(0 0 6px ${color}55)` }}
           />
         </g>
       </svg>
       {children && (
-        <div className="absolute inset-0 grid place-items-center">{children}</div>
+        <div className="absolute inset-0 grid place-items-center">
+          {children}
+        </div>
       )}
     </div>
   );
@@ -198,7 +224,11 @@ export function ProgressArc({
           strokeDasharray="70 100"
           initial={false}
           animate={{ strokeDashoffset: 70 * (1 - p) }}
-          transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 55, damping: 19 }}
+          transition={
+            reduce
+              ? { duration: 0 }
+              : { type: "spring", stiffness: 55, damping: 19 }
+          }
           style={{ filter: `drop-shadow(0 0 10px ${color}88)` }}
         />
       </g>
@@ -237,7 +267,7 @@ export function Segmented<T extends string>({
             className={cx(
               "relative flex-1 whitespace-nowrap rounded-full font-medium transition-colors",
               size === "sm" ? "px-3 py-1.5 text-xs" : "px-3 py-2.5 text-sm",
-              active ? "text-[#05130D]" : "text-sub"
+              active ? "text-[#05130D]" : "text-sub",
             )}
           >
             {active && (
@@ -248,7 +278,9 @@ export function Segmented<T extends string>({
                 transition={{ type: "spring", stiffness: 420, damping: 34 }}
               />
             )}
-            <span className={cx("relative z-10", active && "font-bold")}>{o.label}</span>
+            <span className={cx("relative z-10", active && "font-bold")}>
+              {o.label}
+            </span>
           </button>
         );
       })}
@@ -273,11 +305,31 @@ export function RoundButton({
 }) {
   const reduce = useReducedMotion();
   const styles: Record<string, React.CSSProperties> = {
-    green: { background: "#20C98A", color: "#05130D", boxShadow: "0 6px 20px rgba(32,201,138,0.35)" },
-    blue: { background: "#5599F2", color: "#061018", boxShadow: "0 6px 20px rgba(85,153,242,0.35)" },
-    purple: { background: "#A78BFA", color: "#171226", boxShadow: "0 6px 20px rgba(167,139,250,0.35)" },
-    sub: { background: "#202631", color: "#9BA3AE", border: "1px solid #303744" },
-    outline: { background: "transparent", color: "#9BA3AE", border: "1px solid #303744" },
+    green: {
+      background: "#20C98A",
+      color: "#05130D",
+      boxShadow: "0 6px 20px rgba(32,201,138,0.35)",
+    },
+    blue: {
+      background: "#5599F2",
+      color: "#061018",
+      boxShadow: "0 6px 20px rgba(85,153,242,0.35)",
+    },
+    purple: {
+      background: "#A78BFA",
+      color: "#171226",
+      boxShadow: "0 6px 20px rgba(167,139,250,0.35)",
+    },
+    sub: {
+      background: "#202631",
+      color: "#9BA3AE",
+      border: "1px solid #303744",
+    },
+    outline: {
+      background: "transparent",
+      color: "#9BA3AE",
+      border: "1px solid #303744",
+    },
   };
   return (
     <motion.button
@@ -320,7 +372,7 @@ export function PrimaryButton({
         tone === "green"
           ? "bg-primary text-[#05130D] shadow-[0_8px_24px_rgba(32,201,138,0.30)]"
           : "bg-blue text-[#061018] shadow-[0_8px_24px_rgba(85,153,242,0.30)]",
-        className
+        className,
       )}
     >
       {children}
@@ -378,7 +430,11 @@ export function ProgressBar({
         className="h-full rounded-full"
         initial={false}
         animate={{ width: `${p}%` }}
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 80, damping: 20 }}
+        transition={
+          reduce
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 80, damping: 20 }
+        }
         style={{ background: color, boxShadow: `0 0 12px ${color}66` }}
       />
     </div>
@@ -387,7 +443,15 @@ export function ProgressBar({
 
 /* ---------- Empty state ---------- */
 
-export function EmptyState({ icon, title, hint }: { icon: ReactNode; title: string; hint?: string }) {
+export function EmptyState({
+  icon,
+  title,
+  hint,
+}: {
+  icon: ReactNode;
+  title: string;
+  hint?: string;
+}) {
   return (
     <div className="flex flex-col items-center justify-center py-10 text-center">
       <IconBadge icon={icon} tone="sub" size={56} />
@@ -399,7 +463,13 @@ export function EmptyState({ icon, title, hint }: { icon: ReactNode; title: stri
 
 /* ---------- Page body (entrance animation + ambient glow) ---------- */
 
-export function PageBody({ children, className }: { children: ReactNode; className?: string }) {
+export function PageBody({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const reduce = useReducedMotion();
   return (
     <motion.main
@@ -409,13 +479,20 @@ export function PageBody({ children, className }: { children: ReactNode; classNa
       className={cx("relative px-4 pb-36", className)}
     >
       {/* Ambient glow — subtle colored blurs behind the content */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -top-28 -right-16 h-72 w-72 rounded-full bg-[#00d287] opacity-[0.13] blur-3xl" />
-        <div className="absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-[#b072ff] opacity-10 blur-3xl" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      >
+        {/* هاله سبز (بالا سمت راست) - حفظ شد */}
+        <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px]" />
+
+        {/* هاله قرمز جدید (پایین سمت راست) */}
+        <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px]" />
+
+        {/* هاله بنفش درخشان (پایین سمت چپ) */}
+        <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px]" />
       </div>
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
     </motion.main>
   );
 }

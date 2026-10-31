@@ -14,14 +14,18 @@ import {
 import Link from "next/link";
 import { useMemo, type ReactNode } from "react";
 import { HeaderSpacer, ScreenHeader } from "@/components/shell/screen-header";
-import { Card, IconBadge, PageBody } from "@/components/ui/primitives";
+import { Card, IconBadge } from "@/components/ui/primitives";
 import { clamp, dayKey, fa, faFullDate, faTime } from "@/lib/format";
-import { MEAL_LABELS, MEAL_ORDER, type FoodLogEntry, type MealType } from "@/lib/types";
+import {
+  MEAL_LABELS,
+  MEAL_ORDER,
+  type FoodLogEntry,
+  type MealType,
+} from "@/lib/types";
 import { dayTotals, useNutritionStore, useProfileStore } from "@/stores";
 
 const NO_ENTRIES: FoodLogEntry[] = [];
 
-/* Macro accent colors — same palette as the calorie card macro bars */
 const MACRO_COLORS = {
   protein: "#b072ff",
   carbs: "#ffdb40",
@@ -29,14 +33,25 @@ const MACRO_COLORS = {
   calories: "#f2a94b",
 } as const;
 
-const MEAL_META: Record<MealType, { icon: LucideIcon; tone: "green" | "orange" | "blue" | "purple" }> = {
+const MEAL_META: Record<
+  MealType,
+  { icon: LucideIcon; tone: "green" | "orange" | "blue" | "purple" }
+> = {
   breakfast: { icon: Coffee, tone: "orange" },
   lunch: { icon: UtensilsCrossed, tone: "green" },
   snack: { icon: Apple, tone: "blue" },
   dinner: { icon: Soup, tone: "purple" },
 };
 
-function MacroPill({ label, value, color }: { label: string; value: number; color: string }) {
+function MacroPill({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: number;
+  color: string;
+}) {
   return (
     <span
       className="rounded-full px-2 py-0.5 text-[10px] font-bold tnum"
@@ -64,15 +79,32 @@ function MealRow({ entry, dateKey }: { entry: FoodLogEntry; dateKey: string }) {
         <div className="min-w-0 flex-1">
           <p className="truncate text-[13px] font-bold">{entry.name}</p>
           <p className="mt-1 flex flex-wrap items-center gap-1.5">
-            <MacroPill label="" value={entry.calories} color={MACRO_COLORS.calories} />
-            <MacroPill label="پ" value={entry.protein} color={MACRO_COLORS.protein} />
-            <MacroPill label="ک" value={entry.carbs} color={MACRO_COLORS.carbs} />
-            <MacroPill label="قند" value={entry.sugar ?? 0} color={MACRO_COLORS.sugar} />
-            <span className="text-[9.5px] text-muted tnum">{faTime(entry.time)}</span>
+            <MacroPill
+              label=""
+              value={entry.calories}
+              color={MACRO_COLORS.calories}
+            />
+            <MacroPill
+              label="پ"
+              value={entry.protein}
+              color={MACRO_COLORS.protein}
+            />
+            <MacroPill
+              label="ک"
+              value={entry.carbs}
+              color={MACRO_COLORS.carbs}
+            />
+            <MacroPill
+              label="قند"
+              value={entry.sugar ?? 0}
+              color={MACRO_COLORS.sugar}
+            />
+            <span className="text-[9.5px] text-muted tnum">
+              {faTime(entry.time)}
+            </span>
           </p>
         </div>
 
-        {/* حذف مورد */}
         <button
           type="button"
           aria-label={`حذف ${entry.name}`}
@@ -100,7 +132,6 @@ function MealSection({
 
   return (
     <Card className="p-4">
-      {/* سربرگ وعده */}
       <div className="mb-1 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <IconBadge
@@ -119,7 +150,6 @@ function MealSection({
           </div>
         </div>
 
-        {/* افزودن غذا به همین وعده — FoodSheet با وعده از پیش انتخاب‌شده */}
         <Link
           href={`/food?meal=${meal}`}
           aria-label={`افزودن غذا به ${MEAL_LABELS[meal]}`}
@@ -130,7 +160,6 @@ function MealSection({
         </Link>
       </div>
 
-      {/* لیست غذاها */}
       {entries.length > 0 ? (
         <ul className="divide-y divide-white/[0.03]">
           <AnimatePresence initial={false}>
@@ -149,7 +178,11 @@ function MealSection({
 }
 
 function SummaryCard({ children }: { children: ReactNode }) {
-  return <Card glow="green" className="flex items-center gap-4 p-5">{children}</Card>;
+  return (
+    <Card glow="green" className="flex items-center gap-4 p-5">
+      {children}
+    </Card>
+  );
 }
 
 export default function MealsPage() {
@@ -164,45 +197,62 @@ export default function MealsPage() {
 
   return (
     <>
-      <ScreenHeader
-        title="وعده‌های امروز"
-        subtitle={faFullDate()}
-      />
+      <ScreenHeader title="وعده‌های امروز" subtitle={faFullDate()} />
       <HeaderSpacer />
 
-      <PageBody className="pt-4">
-        {/* خلاصه روز */}
-        <SummaryCard>
-          <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
-            <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-[15px] font-bold">کالری امروز</h2>
-            <p className="mt-1 text-[12px] font-extrabold tnum">
-              <span className="text-primary">{fa(totals.calories)}</span>
-              <span className="text-sub"> از {fa(dailyCalories)} کالری</span>
-            </p>
-            <p className="mt-0.5 text-[10.5px] text-sub tnum">
-              {remaining > 0 ? `${fa(remaining)} کالری باقی‌مانده` : "هدف کالری امروز کامل شد"}
-            </p>
-          </div>
-          <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
-            {fa(Math.round(progress * 100))}٪
-          </span>
-        </SummaryCard>
-
-        {/* بخش هر وعده */}
-        <div className="mt-4 space-y-3.5">
-          {MEAL_ORDER.map((meal) => (
-            <MealSection
-              key={meal}
-              meal={meal}
-              entries={entries.filter((e) => e.meal === meal)}
-              dateKey={key}
-            />
-          ))}
+      {/* 
+        این کانتینر اصلی است. عرض آن w-full است تا نوار پایین به لبه‌ها بچسبد،
+        اما درون آن لایه‌های Glow را قرار دادیم تا زیبایی صفحه اصلی را داشته باشد.
+      */}
+      <div className="w-full min-h-screen bg-[#0b0c10] relative overflow-hidden pb-36">
+        {/* --- لایه‌ی Glow ها --- */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+        >
+          {/* هاله سبز (بالا راست) */}
+          <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px]" />
+          {/* هاله قرمز (پایین راست) */}
+          <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px]" />
+          {/* هاله بنفش (پایین چپ) */}
+          <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px]" />
         </div>
-      </PageBody>
+
+        {/* محتوای اصلی با z-10 تا روی گلوی پس‌زمینه قرار بگیرد */}
+        <main className="relative z-10 mx-auto w-full max-w-md px-4 pt-4">
+          <SummaryCard>
+            <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
+              <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-[15px] font-bold">کالری امروز</h2>
+              <p className="mt-1 text-[12px] font-extrabold tnum">
+                <span className="text-primary">{fa(totals.calories)}</span>
+                <span className="text-sub"> از {fa(dailyCalories)} کالری</span>
+              </p>
+              <p className="mt-0.5 text-[10.5px] text-sub tnum">
+                {remaining > 0
+                  ? `${fa(remaining)} کالری باقی‌مانده`
+                  : "هدف کالری امروز کامل شد"}
+              </p>
+            </div>
+            <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
+              {fa(Math.round(progress * 100))}٪
+            </span>
+          </SummaryCard>
+
+          <div className="mt-4 space-y-3.5">
+            {MEAL_ORDER.map((meal) => (
+              <MealSection
+                key={meal}
+                meal={meal}
+                entries={entries.filter((e) => e.meal === meal)}
+                dateKey={key}
+              />
+            ))}
+          </div>
+        </main>
+      </div>
     </>
   );
 }
