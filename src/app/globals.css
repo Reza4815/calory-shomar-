@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0c11;
+  --color-surface: #111319;
+  --color-card: #1a1b24;
+  --color-elevated: #202631;
+  --color-border: #303744;
+  --color-primary: #20c98a;
+  --color-primary-deep: #128a5f;
+  --color-blue: #5599f2;
+  --color-purple: #9b78e8;
+  --color-orange: #f2a94b;
+  --color-red: #f16b68;
+  --color-text: #f3f4f6;
+  --color-sub: #9ba3ae;
+  --color-muted: #656e7b;
+
+  --font-sans: var(--font-vazirmatn), "Segoe UI", Tahoma, sans-serif;
+
+  --shadow-glow-green: 0 0 44px rgba(32, 201, 138, 0.2);
+  --shadow-glow-blue: 0 0 44px rgba(85, 153, 242, 0.16);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+  --radius-cozy: 22px;
+
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+}
+
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.88;
+  }
+}
+
+html {
+  direction: rtl;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  overscroll-behavior-y: none;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+
+/* Mobile app frame: centered capsule on desktop, full-bleed on phones */
+.app-frame {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  margin-inline: auto;
+  min-height: 100dvh;
+  background: var(--color-bg);
+}
+
+@media (min-width: 520px) {
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(60% 42% at 50% 0%, rgba(32, 201, 138, 0.07), transparent 70%),
+      radial-gradient(40% 34% at 82% 88%, rgba(85, 153, 242, 0.05), transparent 70%);
+    pointer-events: none;
+  }
+  .app-frame {
+    border-inline: 1px solid rgba(48, 55, 68, 0.55);
+    box-shadow: 0 0 90px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* Fixed overlays align with the app frame, not the full viewport */
+.frame-fixed {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-muted);
+}
+
+/* remove number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* subtle grain-free focus rings */
+.focus-ring:focus-visible {
+  outline: 2px solid rgba(32, 201, 138, 0.55);
+  outline-offset: 2px;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
