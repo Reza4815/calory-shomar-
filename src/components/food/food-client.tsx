@@ -81,7 +81,7 @@ export function FoodClient({ initialMeal }: { initialMeal: MealType }) {
           </div>
         }
       />
-      <HeaderSpacer />
+
 
       <PageBody className="pt-4">
         <Segmented id="meal" options={MEAL_OPTIONS} value={meal} onChange={setMeal} />

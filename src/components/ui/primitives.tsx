@@ -360,6 +360,7 @@ export function PageBody({
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className={cx("relative w-full flex-1 flex flex-col", className)}
     >
+      {/* در اینجا px-4 اضافه شد تا محتوا به لبه‌ها نچسبه */}
       <div className="relative z-10 px-4 w-full flex-1">{children}</div>
     </motion.main>
   );

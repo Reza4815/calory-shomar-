@@ -30,7 +30,9 @@ function WeightChart({ data }: { data: { key: string; kg: number }[] }) {
     const y = h - 14 - ((d.kg - min) / (max - min)) * (h - 34);
     return { x, y, ...d };
   });
-  const line = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+  const line = pts
+    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`)
+    .join(" ");
   const area = `${line} L${pts[pts.length - 1].x},${h} L${pts[0].x},${h} Z`;
 
   return (
@@ -54,7 +56,15 @@ function WeightChart({ data }: { data: { key: string; kg: number }[] }) {
           transition={{ duration: 1, ease: "easeOut" }}
         />
         {pts.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r={i === pts.length - 1 ? 4.5 : 3} fill={i === pts.length - 1 ? "#20C98A" : "#191D27"} stroke="#20C98A" strokeWidth="2" />
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={i === pts.length - 1 ? 4.5 : 3}
+            fill={i === pts.length - 1 ? "#20C98A" : "#191D27"}
+            stroke="#20C98A"
+            strokeWidth="2"
+          />
         ))}
       </svg>
       <div className="mt-1 flex justify-between text-[10px] text-muted tnum">
@@ -90,7 +100,11 @@ export default function WeightPage() {
   const save = () => {
     addWeight(value);
     setSheetOpen(false);
-    toast({ title: "وزن امروز ثبت شد", description: `${fa(value, 1)} کیلو`, tone: "green" });
+    toast({
+      title: "وزن امروز ثبت شد",
+      description: `${fa(value, 1)} کیلو`,
+      tone: "green",
+    });
   };
 
   const today = new Date();
@@ -99,10 +113,9 @@ export default function WeightPage() {
 
   return (
     <>
-      <ScreenHeader title="پیشرفت وزن" subtitle="ثبت و پیگیری تغییرات وزن" />
-      <HeaderSpacer />
-
       <PageBody className="pt-5">
+        {" "}
+        <ScreenHeader title="پیشرفت وزن" subtitle="ثبت و پیگیری تغییرات وزن" />
         {/* current */}
         <Card glow="green" className="p-5">
           <div className="flex items-center justify-between">
@@ -113,25 +126,39 @@ export default function WeightPage() {
                 <span className="text-sm font-semibold text-sub">کیلو</span>
               </p>
               {latest && before && (
-                <p className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${delta <= 0 ? "bg-primary/12 text-primary" : "bg-red/12 text-red"}`}>
-                  <TrendingDown className={`h-3 w-3 ${delta > 0 ? "rotate-180" : ""}`} />
-                  {delta <= 0 ? fa(Math.abs(delta), 1) : fa(delta, 1)} کیلو {delta <= 0 ? "کمتر" : "بیشتر"}
+                <p
+                  className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${delta <= 0 ? "bg-primary/12 text-primary" : "bg-red/12 text-red"}`}
+                >
+                  <TrendingDown
+                    className={`h-3 w-3 ${delta > 0 ? "rotate-180" : ""}`}
+                  />
+                  {delta <= 0 ? fa(Math.abs(delta), 1) : fa(delta, 1)} کیلو{" "}
+                  {delta <= 0 ? "کمتر" : "بیشتر"}
                 </p>
               )}
             </div>
-            <IconBadge icon={<Scale className="h-6 w-6" />} tone="green" size={56} />
+            <IconBadge
+              icon={<Scale className="h-6 w-6" />}
+              tone="green"
+              size={56}
+            />
           </div>
 
           <div className="mt-5">
             <div className="mb-2 flex justify-between text-xs">
               <span className="text-sub">
-                شروع {fa(goals.startWeightKg, 1)} ← هدف {fa(goals.targetWeightKg, 1)} کیلو
+                شروع {fa(goals.startWeightKg, 1)} ← هدف{" "}
+                {fa(goals.targetWeightKg, 1)} کیلو
               </span>
-              <span className="font-bold text-primary tnum">{fa(Math.round(progress * 100))}٪ مسیر</span>
+              <span className="font-bold text-primary tnum">
+                {fa(Math.round(progress * 100))}٪ مسیر
+              </span>
             </div>
             <ProgressBar progress={progress} />
             <p className="mt-2 text-[11px] text-muted tnum">
-              {remaining > 0 ? `${fa(remaining, 1)} کیلو تا هدف مانده` : "به هدف وزنی رسیدی؛ حالا حفظش کن!"}
+              {remaining > 0
+                ? `${fa(remaining, 1)} کیلو تا هدف مانده`
+                : "به هدف وزنی رسیدی؛ حالا حفظش کن!"}
             </p>
           </div>
 
@@ -142,17 +169,21 @@ export default function WeightPage() {
             </span>
           </PrimaryButton>
         </Card>
-
         {/* chart */}
         <Card className="mt-5 p-5">
           <h3 className="mb-4 text-[15px] font-bold">نمودار تغییرات</h3>
           {weights.length >= 2 ? (
-            <WeightChart data={weights.slice(-8).map((r) => ({ key: r.date, kg: r.kg }))} />
+            <WeightChart
+              data={weights.slice(-8).map((r) => ({ key: r.date, kg: r.kg }))}
+            />
           ) : (
-            <EmptyState icon={<Scale className="h-6 w-6" />} title="داده کافی نیست" hint="چند بار وزن ثبت کن تا نمودار ساخته شود" />
+            <EmptyState
+              icon={<Scale className="h-6 w-6" />}
+              title="داده کافی نیست"
+              hint="چند بار وزن ثبت کن تا نمودار ساخته شود"
+            />
           )}
         </Card>
-
         {/* history */}
         <Card className="mt-5 p-5">
           <h3 className="mb-3 text-[15px] font-bold">سوابق وزن</h3>
@@ -161,14 +192,27 @@ export default function WeightPage() {
               const prev = arr[idx + 1];
               const d = prev ? round1(r.kg - prev.kg) : 0;
               return (
-                <div key={r.id} className="flex items-center gap-3 rounded-xl px-2 py-2.5">
+                <div
+                  key={r.id}
+                  className="flex items-center gap-3 rounded-xl px-2 py-2.5"
+                >
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] font-bold tnum">{fa(r.kg, 1)} کیلو</p>
-                    <p className="text-[10.5px] text-muted tnum">{faShortDateKey(r.date)}</p>
+                    <p className="text-[13px] font-bold tnum">
+                      {fa(r.kg, 1)} کیلو
+                    </p>
+                    <p className="text-[10.5px] text-muted tnum">
+                      {faShortDateKey(r.date)}
+                    </p>
                   </div>
                   {prev && (
-                    <span className={`text-[11px] font-semibold tnum ${d <= 0 ? "text-primary" : "text-red"}`}>
-                      {d === 0 ? "—" : d < 0 ? `${fa(Math.abs(d), 1)}-` : `${fa(d, 1)}+`}
+                    <span
+                      className={`text-[11px] font-semibold tnum ${d <= 0 ? "text-primary" : "text-red"}`}
+                    >
+                      {d === 0
+                        ? "—"
+                        : d < 0
+                          ? `${fa(Math.abs(d), 1)}-`
+                          : `${fa(d, 1)}+`}
                     </span>
                   )}
                   <button
@@ -187,13 +231,30 @@ export default function WeightPage() {
       </PageBody>
 
       {/* entry sheet */}
-      <Sheet open={sheetOpen} onClose={() => setSheetOpen(false)} title="ثبت وزن" subtitle="وزن امروزت رو وارد کن">
+      <Sheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title="ثبت وزن"
+        subtitle="وزن امروزت رو وارد کن"
+      >
         <div className="flex flex-col items-center py-2">
           <p className="text-5xl font-extrabold tnum">{fa(value, 1)}</p>
           <p className="mt-1 text-xs text-muted">کیلوگرم</p>
           <div className="mt-6 flex items-center gap-7">
-            <RoundButton tone="green" size={52} label="زیاد کردن" icon={<Plus className="h-5 w-5" />} onClick={() => setValue((v) => Math.min(200, round1(v + 0.1)))} />
-            <RoundButton tone="sub" size={52} label="کم کردن" icon={<Minus className="h-5 w-5" />} onClick={() => setValue((v) => Math.max(30, round1(v - 0.1)))} />
+            <RoundButton
+              tone="green"
+              size={52}
+              label="زیاد کردن"
+              icon={<Plus className="h-5 w-5" />}
+              onClick={() => setValue((v) => Math.min(200, round1(v + 0.1)))}
+            />
+            <RoundButton
+              tone="sub"
+              size={52}
+              label="کم کردن"
+              icon={<Minus className="h-5 w-5" />}
+              onClick={() => setValue((v) => Math.max(30, round1(v - 0.1)))}
+            />
           </div>
           <div className="mt-4 grid w-full grid-cols-4 gap-2">
             {[-1, -0.5, 0.5, 1].map((d) => (
@@ -207,7 +268,9 @@ export default function WeightPage() {
               </button>
             ))}
           </div>
-          <PrimaryButton className="mt-6" onClick={save}>ثبت</PrimaryButton>
+          <PrimaryButton className="mt-6" onClick={save}>
+            ثبت
+          </PrimaryButton>
         </div>
       </Sheet>
     </>

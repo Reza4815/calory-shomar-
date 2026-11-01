@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
@@ -19,30 +18,28 @@ export function ScreenHeader({
   const router = useRouter();
 
   return (
-    <header className="sticky top-0 z-30 w-full flex justify-center border-b border-white/5 bg-[#0b0c10]/90 backdrop-blur-md">
-      <div className="w-full max-w-md px-4 py-3 flex items-center justify-between">
-        <button
-          onClick={() => (href ? router.push(href) : router.back())}
-          className="grid h-10 w-10 place-items-center rounded-full bg-white/5 text-white transition-colors hover:bg-white/10"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
-
-        <div className="text-center flex-1">
-          <h1 className="text-[17px] font-bold text-white">{title}</h1>
-          {subtitle && (
-            <p className="mt-0.5 text-[11px] text-[#8b8e98]">{subtitle}</p>
-          )}
-        </div>
-
-        <div className="w-10 h-10 flex items-center justify-center">
-          {end || null}
-        </div>
+    <div className="flex w-full items-start justify-between mb-5 mt-2">
+      <div className="flex-1">
+        <h1 className="text-2xl font-extrabold text-white">{title}</h1>
+        {subtitle && <p className="mt-1 text-sm text-sub">{subtitle}</p>}
       </div>
-    </header>
+
+      <div className="flex items-center gap-2 shrink-0">
+        {end && <div>{end}</div>}
+        {(href || router) && (
+          <button
+            onClick={() => (href ? router.push(href) : router.back())}
+            className="grid h-10 w-10 place-items-center rounded-full bg-white/5 text-white transition-colors hover:bg-white/10 shrink-0"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
+// دیگر نیازی به فاصله‌دهی نیست
 export function HeaderSpacer() {
   return null;
 }

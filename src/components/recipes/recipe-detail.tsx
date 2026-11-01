@@ -40,7 +40,7 @@ export function RecipeDetailClient({ recipe }: { recipe: Recipe }) {
   return (
     <>
       <ScreenHeader title={recipe.name} subtitle={`${recipe.difficulty} · آماده‌سازی ${fa(recipe.minutes)} دقیقه`} />
-      <HeaderSpacer />
+
 
       <PageBody className="pt-5">
         {/* banner */}

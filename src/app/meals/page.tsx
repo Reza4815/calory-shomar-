@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { useMemo } from "react";
 import { ScreenHeader } from "@/components/shell/screen-header";
-import { Card, IconBadge } from "@/components/ui/primitives";
+import { Card, IconBadge, PageBody } from "@/components/ui/primitives"; // PageBody اضافه شد
 import { clamp, dayKey, fa, faFullDate, faTime } from "@/lib/format";
 import {
   MEAL_LABELS,
@@ -182,41 +182,40 @@ export default function MealsPage() {
   const progress = clamp(totals.calories / Math.max(1, dailyCalories), 0, 1);
 
   return (
-    <div className="w-full flex-1 flex flex-col relative">
+    <PageBody className="pt-6">
       <ScreenHeader title="وعده‌های امروز" subtitle={faFullDate()} />
-      <div className="relative z-10 w-full px-4 pt-4 pb-4 flex-1">
-        <Card glow="green" className="flex items-center gap-4 p-5">
-          <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
-            <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-[15px] font-bold">کالری امروز</h2>
-            <p className="mt-1 text-[12px] font-extrabold tnum">
-              <span className="text-primary">{fa(totals.calories)}</span>
-              <span className="text-sub"> از {fa(dailyCalories)} کالری</span>
-            </p>
-            <p className="mt-0.5 text-[10.5px] text-sub tnum">
-              {remaining > 0
-                ? `${fa(remaining)} کالری باقی‌مانده`
-                : "هدف کالری امروز کامل شد"}
-            </p>
-          </div>
-          <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
-            {fa(Math.round(progress * 100))}٪
-          </span>
-        </Card>
 
-        <div className="mt-4 space-y-3.5">
-          {MEAL_ORDER.map((meal) => (
-            <MealSection
-              key={meal}
-              meal={meal}
-              entries={entries.filter((e) => e.meal === meal)}
-              dateKey={key}
-            />
-          ))}
+      <Card glow="green" className="flex items-center gap-4 p-5">
+        <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
+          <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
         </div>
+        <div className="flex-1">
+          <h2 className="text-[15px] font-bold">کالری امروز</h2>
+          <p className="mt-1 text-[12px] font-extrabold tnum">
+            <span className="text-primary">{fa(totals.calories)}</span>
+            <span className="text-sub"> از {fa(dailyCalories)} کالری</span>
+          </p>
+          <p className="mt-0.5 text-[10.5px] text-sub tnum">
+            {remaining > 0
+              ? `${fa(remaining)} کالری باقی‌مانده`
+              : "هدف کالری امروز کامل شد"}
+          </p>
+        </div>
+        <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
+          {fa(Math.round(progress * 100))}٪
+        </span>
+      </Card>
+
+      <div className="mt-4 space-y-3.5 pb-8">
+        {MEAL_ORDER.map((meal) => (
+          <MealSection
+            key={meal}
+            meal={meal}
+            entries={entries.filter((e) => e.meal === meal)}
+            dateKey={key}
+          />
+        ))}
       </div>
-    </div>
+    </PageBody>
   );
 }
