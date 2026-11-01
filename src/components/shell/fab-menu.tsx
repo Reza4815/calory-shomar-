@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { haptic } from "@mxerf/tappt"; // ایمپورت ویبره
 import { Sheet } from "@/components/ui/sheet";
 import { Portal } from "@/components/ui/portal";
 import { WaterControls } from "@/components/water-controls";
@@ -98,7 +99,10 @@ export function FabMenu() {
   const router = useRouter();
   const reduce = useReducedMotion();
 
-  const close = () => setOpen(false);
+  const close = () => {
+    haptic.selection(); // ویبره هنگام بستن
+    setOpen(false);
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -110,16 +114,21 @@ export function FabMenu() {
 
   useEffect(() => {
     if (!open) return;
+    window.dispatchEvent(
+      new CustomEvent("toggle-bottom-nav", { detail: { hide: true } }),
+    );
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
+      window.dispatchEvent(
+        new CustomEvent("toggle-bottom-nav", { detail: { hide: false } }),
+      );
       document.body.style.overflow = prev;
     };
   }, [open]);
 
   const go = (href: string) => () => {
-    close();
-    // زمان کمی صبر می‌کنیم تا انیمیشن خروج منو اجرا شود، بعد صفحه عوض شود
+    close(); // close خودش ویبره داره
     setTimeout(() => router.push(href), 150);
   };
 
@@ -147,7 +156,10 @@ export function FabMenu() {
       <motion.button
         type="button"
         aria-label="ثبت سریع"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          haptic.selection(); // ویبره هنگام باز کردن
+          setOpen(true);
+        }}
         whileTap={reduce ? undefined : { scale: 0.88 }}
         className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-primary text-[#05130D] shadow-[0_8px_26px_rgba(32,201,138,0.45),0_0_44px_rgba(32,201,138,0.18)]"
       >
@@ -162,7 +174,6 @@ export function FabMenu() {
               role="dialog"
               aria-modal="true"
             >
-              {/* بک‌گراند با انیمیشن محو شدن سریع */}
               <motion.button
                 aria-label="بستن منو"
                 onClick={close}
@@ -215,7 +226,6 @@ export function FabMenu() {
                         exit={{
                           opacity: 0,
                           scale: 0.8,
-                          // اینجا هیچ تاخیری (delay) نداریم تا فریز نشه
                           transition: { duration: 0.12 },
                         }}
                         transition={{

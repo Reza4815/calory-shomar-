@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
+import { haptic } from "@mxerf/tappt"; // ایمپورت ویبره
 import { ScreenHeader } from "@/components/shell/screen-header";
-import { Card, IconBadge, PageBody } from "@/components/ui/primitives"; // PageBody اضافه شد
+import { Card, IconBadge, PageBody } from "@/components/ui/primitives";
 import { clamp, dayKey, fa, faFullDate, faTime } from "@/lib/format";
 import {
   MEAL_LABELS,
@@ -106,7 +107,10 @@ function MealRow({ entry, dateKey }: { entry: FoodLogEntry; dateKey: string }) {
         </div>
         <button
           type="button"
-          onClick={() => removeFoodEntry(dateKey, entry.id)}
+          onClick={() => {
+            haptic.selection(); // ویبره هنگام حذف
+            removeFoodEntry(dateKey, entry.id);
+          }}
           className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sub transition-colors hover:bg-[#ff5c5c]/15 hover:text-[#ff5c5c]"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -150,6 +154,7 @@ function MealSection({
         <Link
           href={`/food?meal=${meal}`}
           className="flex items-center gap-1.5 rounded-full bg-primary/15 px-3.5 py-2 text-[11.5px] font-bold text-primary transition-transform active:scale-95"
+          onClick={() => haptic.selection()} // ویبره هنگام افزودن
         >
           <Plus className="h-3.5 w-3.5" strokeWidth={2.6} /> افزودن
         </Link>
