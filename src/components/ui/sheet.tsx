@@ -22,9 +22,20 @@ export function Sheet({
 
   useEffect(() => {
     if (!open) return;
+
+    // وقتی شیت باز میشه به نوار پایین میگیم مخفی بشه
+    window.dispatchEvent(
+      new CustomEvent("toggle-bottom-nav", { detail: { hide: true } }),
+    );
+
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
     return () => {
+      // وقتی شیت بسته میشه به نوار پایین میگیم برگرده
+      window.dispatchEvent(
+        new CustomEvent("toggle-bottom-nav", { detail: { hide: false } }),
+      );
       document.body.style.overflow = prev;
     };
   }, [open]);
@@ -52,14 +63,16 @@ export function Sheet({
             transition={{ type: "spring", stiffness: 320, damping: 34 }}
             className={cx(
               "relative flex max-h-[86dvh] w-full max-w-[430px] flex-col overflow-hidden",
-              "rounded-t-[28px] border border-b-0 border-border/80 bg-elevated"
+              "rounded-t-[28px] border border-b-0 border-border/80 bg-elevated",
             )}
           >
             <div className="mx-auto mt-2.5 h-1.5 w-11 shrink-0 rounded-full bg-border" />
             <div className="flex items-center justify-between px-5 pb-2 pt-3">
               <div>
                 {title && <h3 className="text-lg font-bold">{title}</h3>}
-                {subtitle && <p className="mt-0.5 text-xs text-sub">{subtitle}</p>}
+                {subtitle && (
+                  <p className="mt-0.5 text-xs text-sub">{subtitle}</p>
+                )}
               </div>
               <button
                 type="button"

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { cx } from "@/lib/cx";
 import { FabMenu } from "./fab-menu";
 
@@ -44,11 +45,22 @@ const ITEMS = [
 export function BottomNav() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    // گوش دادن به رویدادی که Sheet و FabMenu می‌فرستن
+    const handleToggle = (e: any) => setIsHidden(e.detail.hide);
+    window.addEventListener("toggle-bottom-nav", handleToggle);
+    return () => window.removeEventListener("toggle-bottom-nav", handleToggle);
+  }, []);
 
   return (
     <nav
       aria-label="ناوبری اصلی"
-      className="fixed inset-x-0 bottom-0 z-40 w-full flex justify-center pointer-events-none"
+      className={cx(
+        "fixed inset-x-0 bottom-0 z-40 w-full flex justify-center transition-all duration-300 pointer-events-none",
+        isHidden ? "opacity-0 translate-y-10" : "opacity-100 translate-y-0",
+      )}
       style={{
         paddingBottom: "max(12px, env(safe-area-inset-bottom))",
       }}
