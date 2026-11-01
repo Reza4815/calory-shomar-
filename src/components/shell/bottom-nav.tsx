@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { haptic } from "@mxerf/tappt"; // ایمپورت ویبره
+import { haptic } from "@mxerf/tappt";
 import { cx } from "@/lib/cx";
 import { FabMenu } from "./fab-menu";
 
@@ -43,7 +43,6 @@ const ITEMS = [
   },
 ];
 
-// کامپوننت داخلی برای مدیریت ویبره روی لینک‌ها
 function NavItem({
   item,
   pathname,
@@ -59,7 +58,6 @@ function NavItem({
 
   useEffect(() => {
     if (ref.current) {
-      // این خط باعث میشه لینک‌ها روی آیفون ویبره بزنن
       const detach = haptic.attach(ref.current, { kind: "selection" });
       return () => detach();
     }
@@ -77,8 +75,8 @@ function NavItem({
       {active && (
         <motion.span
           layoutId="nav-pill"
-          className="absolute inset-0 rounded-full bg-elevated ring-1 ring-primary/30"
-          style={{ boxShadow: "0 0 20px rgba(32,201,138,0.16)" }}
+          className="absolute inset-0 rounded-full bg-white/[0.08] ring-1 ring-white/[0.1]"
+          style={{ boxShadow: "inset 0 1px 1px rgba(255,255,255,0.1)" }}
           transition={
             reduce
               ? { duration: 0 }
@@ -110,7 +108,6 @@ export function BottomNav() {
   const reduce = useReducedMotion();
   const [isHidden, setIsHidden] = useState(false);
 
-  // گوش دادن به رویداد باز/بسته شدن شیت‌ها برای مخفی کردن نوار
   useEffect(() => {
     const handleToggle = (e: any) => setIsHidden(e.detail.hide);
     window.addEventListener("toggle-bottom-nav", handleToggle);
@@ -131,7 +128,8 @@ export function BottomNav() {
       <div className="flex w-full max-w-[430px] items-center gap-3 px-4 pointer-events-auto">
         <FabMenu />
 
-        <div className="flex flex-1 items-center rounded-full border border-border/70 bg-card/85 p-1.5 shadow-[0_14px_36px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+        {/* کپسول شیشه‌ای منو */}
+        <div className="flex flex-1 items-center rounded-[28px] border border-white/[0.12] bg-white/[0.04] p-1.5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-2xl">
           {ITEMS.map((item) => (
             <NavItem
               key={item.href}

@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0b0c11;
-  --color-surface: #111319;
-  --color-card: #1a1b24;
-  --color-elevated: #202631;
-  --color-border: #303744;
+  --color-bg: #08090b; /* تیره‌تر شد */
+  --color-surface: #0d0f14; /* تیره‌تر شد */
+  --color-card: #12141a; /* تیره‌تر شد */
+  --color-elevated: #181b22; /* تیره‌تر شد */
+  --color-border: #252a34; /* تیره‌تر شد */
   --color-primary: #20c98a;
   --color-primary-deep: #128a5f;
   --color-blue: #5599f2;
@@ -13,8 +13,8 @@
   --color-orange: #f2a94b;
   --color-red: #f16b68;
   --color-text: #f3f4f6;
-  --color-sub: #9ba3ae;
-  --color-muted: #656e7b;
+  --color-sub: #8b92a0;
+  --color-muted: #5c626e;
 
   --font-sans: var(--font-vazirmatn), "Segoe UI", Tahoma, sans-serif;
   --shadow-glow-green: 0 0 44px rgba(32, 201, 138, 0.2);
