@@ -57,8 +57,9 @@ export function useDailyProgress() {
   };
 }
 
-// --- گیج (نیم‌دایره) ---
-const GAUGE = { w: 110, h: 55, stroke: 8, r: 46, cx: 55, cy: 55 } as const;
+// --- گیج (نیم‌دایره‌ای) ---
+// سایز بزرگ‌تر شد: w=160, h=80, stroke=12, r=68
+const GAUGE = { w: 160, h: 80, stroke: 12, r: 68, cx: 80, cy: 80 } as const;
 
 function CalorieGauge({ progress }: { progress: number }) {
   const reduce = useReducedMotion();
@@ -80,6 +81,7 @@ function CalorieGauge({ progress }: { progress: number }) {
         fill="none"
         aria-hidden="true"
       >
+        {/* خط پس‌زمینه */}
         <circle
           cx={cx}
           cy={cy}
@@ -90,6 +92,7 @@ function CalorieGauge({ progress }: { progress: number }) {
           strokeLinecap="round"
           strokeDasharray={`${halfCircumference} ${circumference}`}
         />
+        {/* خط پیشرفت با Glow */}
         <motion.circle
           cx={cx}
           cy={cy}
@@ -104,9 +107,15 @@ function CalorieGauge({ progress }: { progress: number }) {
           transition={
             reduce ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }
           }
+          style={{
+            // گلو قوی‌تر و محسوس‌تر
+            filter: `drop-shadow(0 0 6px rgba(255, 92, 92, 0.8)) drop-shadow(0 0 12px rgba(255, 92, 92, ${p * 0.6}))`,
+          }}
         />
       </svg>
-      <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-6 h-6 text-[#ff5c5c] flex justify-center items-center bg-[#16181c] rounded-full z-10">
+
+      {/* آیکون آتش بدون انیمیشن و پایین‌تر */}
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center bg-[#16181c] rounded-full z-10">
         <Flame className="w-full h-full" strokeWidth={2.2} />
       </div>
     </div>
@@ -117,7 +126,6 @@ export function CalorieCard() {
   const { calories, burned, calorieGoal, protein, carbs, sugar } =
     useDailyProgress();
 
-  // محاسبه درصد برای نوارها (اهداف فرضی)
   const proteinGoal = 150;
   const carbsGoal = 250;
   const sugarGoal = 50;
@@ -176,10 +184,8 @@ export function CalorieCard() {
           </div>
         </div>
 
-        {/* نوارهای ماکرو (داینامیک) */}
         <div className="px-4 py-4 flex flex-col items-center gap-3">
           <div className="flex justify-between items-center w-full gap-2">
-            {/* پروتئین */}
             <div className="flex items-center gap-1.5 flex-1">
               <div className="w-4 h-4 flex justify-center items-center text-[#ff7a7a]">
                 <svg
@@ -201,7 +207,6 @@ export function CalorieCard() {
               </div>
             </div>
 
-            {/* کربوهیدرات */}
             <div className="flex items-center gap-1.5 flex-1">
               <div className="w-4 h-4 flex justify-center items-center text-[#ffdb40]">
                 <svg
@@ -224,7 +229,6 @@ export function CalorieCard() {
               </div>
             </div>
 
-            {/* قند */}
             <div className="flex items-center gap-1.5 flex-1">
               <div className="w-4 h-4 flex justify-center items-center text-[#b072ff]">
                 <svg

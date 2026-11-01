@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { haptic } from "@mxerf/tappt"; // ایمپورت پکیج ویبره
+import { useEffect, useRef, useState } from "react";
+import { haptic } from "@mxerf/tappt"; // ایمپورت ویبره
 import { cx } from "@/lib/cx";
 import { FabMenu } from "./fab-menu";
 
@@ -43,7 +43,7 @@ const ITEMS = [
   },
 ];
 
-// کامپوننت داخلی برای هر آیتم که ویبره رو مدیریت می‌کنه
+// کامپوننت داخلی برای مدیریت ویبره روی لینک‌ها
 function NavItem({
   item,
   pathname,
@@ -58,8 +58,8 @@ function NavItem({
   const Icon = item.icon;
 
   useEffect(() => {
-    // این متد به آیفون می‌گه که روی این لینک یه لایه مخفی برای ویبره بذاره
     if (ref.current) {
+      // این خط باعث میشه لینک‌ها روی آیفون ویبره بزنن
       const detach = haptic.attach(ref.current, { kind: "selection" });
       return () => detach();
     }
@@ -72,10 +72,7 @@ function NavItem({
       aria-label={item.label}
       aria-current={active ? "page" : undefined}
       className="relative flex flex-1 flex-col items-center gap-0.5 rounded-full py-2"
-      onClick={() => {
-        // این خط باعث میشه وقتی کلیک کرد، ویبره بزنه
-        haptic.selection();
-      }}
+      onClick={() => haptic.selection()}
     >
       {active && (
         <motion.span
@@ -111,11 +108,22 @@ function NavItem({
 export function BottomNav() {
   const pathname = usePathname();
   const reduce = useReducedMotion();
+  const [isHidden, setIsHidden] = useState(false);
+
+  // گوش دادن به رویداد باز/بسته شدن شیت‌ها برای مخفی کردن نوار
+  useEffect(() => {
+    const handleToggle = (e: any) => setIsHidden(e.detail.hide);
+    window.addEventListener("toggle-bottom-nav", handleToggle);
+    return () => window.removeEventListener("toggle-bottom-nav", handleToggle);
+  }, []);
 
   return (
     <nav
       aria-label="ناوبری اصلی"
-      className="fixed inset-x-0 bottom-0 z-40 w-full flex justify-center pointer-events-none"
+      className={cx(
+        "fixed inset-x-0 bottom-0 z-40 w-full flex justify-center pointer-events-none transition-all duration-300",
+        isHidden ? "opacity-0 translate-y-10" : "opacity-100 translate-y-0",
+      )}
       style={{
         paddingBottom: "max(12px, env(safe-area-inset-bottom))",
       }}
