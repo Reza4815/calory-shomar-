@@ -1,42 +1,48 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { ReactNode } from "react";
 
-/** Sticky sub-screen header with RTL back button (physical right). */
 export function ScreenHeader({
   title,
   subtitle,
-  end,
+  href,
 }: {
   title: string;
   subtitle?: string;
-  end?: ReactNode;
+  href?: string;
 }) {
   const router = useRouter();
+
   return (
-    <header className="frame-fixed top-0 z-30 border-b border-border/50 bg-bg/85 backdrop-blur-xl">
-      <div className="flex items-center gap-3 px-4 py-3.5">
+    <header className="fixed top-0 left-0 right-0 z-30 w-full flex justify-center bg-[#0b0c10]/80 backdrop-blur-md border-b border-white/5">
+      {/* این کانتینر باعث می‌شود هدر در دسکتاپ مثل بقیه صفحات وسط‌چین و محدود شود */}
+      <div className="w-full max-w-md px-4 py-4 flex items-center justify-between">
+        {/* دکمه بازگشت */}
         <button
-          type="button"
-          aria-label="بازگشت"
-          onClick={() => router.back()}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border/70 bg-card text-sub transition-colors active:text-text"
+          onClick={() => (href ? router.push(href) : router.back())}
+          className="grid h-10 w-10 place-items-center rounded-full bg-white/5 text-white transition-colors hover:bg-white/10"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate text-[17px] font-bold leading-tight">{title}</h1>
-          {subtitle && <p className="truncate text-xs text-sub">{subtitle}</p>}
+
+        {/* متن‌ها */}
+        <div className="text-center flex-1">
+          <h1 className="text-[17px] font-bold text-white">{title}</h1>
+          {subtitle && (
+            <p className="mt-0.5 text-[11px] text-[#8b8e98]">{subtitle}</p>
+          )}
         </div>
-        {end}
+
+        {/* فضای خالی برای توازن (هم‌اندازه با دکمه بازگشت) */}
+        <div className="w-10 h-10" />
       </div>
     </header>
   );
 }
 
-/** Spacer matching the sticky header height for sub-screens */
 export function HeaderSpacer() {
-  return <div style={{ height: 68 }} />;
+  // این فضا برای جلوگیری از رفتن محتوا زیر هدر ثابت است
+  return <div className="h-[76px] w-full" />;
 }

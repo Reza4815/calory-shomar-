@@ -7,6 +7,7 @@ import { cx } from "@/lib/cx";
 import { clamp, dayKey, fa } from "@/lib/format";
 import { useBodyStore, useNutritionStore, useProfileStore } from "@/stores";
 import type { FoodLogEntry } from "@/lib/types";
+import { useMemo } from "react";
 
 const NO_ENTRIES: FoodLogEntry[] = [];
 
@@ -24,6 +25,9 @@ export function useDailyProgress() {
 
   const calories = logs.reduce((a, e) => a + e.calories, 0);
   const protein = logs.reduce((a, e) => a + e.protein, 0);
+  const carbs = logs.reduce((a, e) => a + e.carbs, 0);
+  const sugar = logs.reduce((a, e) => a + (e.sugar ?? 0), 0);
+
   const burned = activities
     .filter((a) => a.date === key)
     .reduce((t, a) => t + a.calories, 0);
@@ -40,6 +44,8 @@ export function useDailyProgress() {
     score: Math.round(score * 100),
     calories,
     protein,
+    carbs,
+    sugar,
     proteinGoal,
     burned,
     activityGoal,
@@ -57,7 +63,6 @@ const GAUGE = { w: 110, h: 55, stroke: 8, r: 46, cx: 55, cy: 55 } as const;
 function CalorieGauge({ progress }: { progress: number }) {
   const reduce = useReducedMotion();
   const { w, h, stroke, r, cx, cy } = GAUGE;
-
   const p = clamp(progress, 0, 1);
   const circumference = 2 * Math.PI * r;
   const halfCircumference = circumference / 2;
@@ -85,7 +90,6 @@ function CalorieGauge({ progress }: { progress: number }) {
           strokeLinecap="round"
           strokeDasharray={`${halfCircumference} ${circumference}`}
         />
-
         <motion.circle
           cx={cx}
           cy={cy}
@@ -102,7 +106,6 @@ function CalorieGauge({ progress }: { progress: number }) {
           }
         />
       </svg>
-
       <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-6 h-6 text-[#ff5c5c] flex justify-center items-center bg-[#16181c] rounded-full z-10">
         <Flame className="w-full h-full" strokeWidth={2.2} />
       </div>
@@ -111,21 +114,25 @@ function CalorieGauge({ progress }: { progress: number }) {
 }
 
 export function CalorieCard() {
-  const { calories, burned, calorieGoal } = useDailyProgress();
+  const { calories, burned, calorieGoal, protein, carbs, sugar } =
+    useDailyProgress();
+
+  // محاسبه درصد برای نوارها (اهداف فرضی)
+  const proteinGoal = 150;
+  const carbsGoal = 250;
+  const sugarGoal = 50;
+
+  const proteinPct = Math.min(100, (protein / proteinGoal) * 100);
+  const carbsPct = Math.min(100, (carbs / carbsGoal) * 100);
+  const sugarPct = Math.min(100, (sugar / sugarGoal) * 100);
 
   const remaining = Math.max(0, calorieGoal - calories);
   const over = calorieGoal - calories < 0;
-
   const progress = clamp(calories / Math.max(1, calorieGoal), 0, 1);
 
   return (
     <div className="w-full mt-4 flex flex-col font-sans text-white">
-      {/* 
-        کل کانتینر به رنگ کارت پایینی درآمده تا هیچ لبه‌ای بیرون نزند.
-        باکس اصلی داخل آن با رنگ روشن‌تر قرار گرفته است.
-      */}
       <div className="w-full bg-[#141519] rounded-[28px] border border-white/[0.03] overflow-hidden flex flex-col">
-        {/* 1. کارت اصلی (بالا) */}
         <div className="bg-[#16181c] rounded-b-[20px] px-5 pt-6 pb-5">
           <div className="flex justify-between items-center mb-5">
             <div className="flex flex-col items-start gap-1">
@@ -145,7 +152,6 @@ export function CalorieCard() {
 
           <div className="w-full h-[1px] bg-white/[0.04] mb-4"></div>
 
-          {/* آمار */}
           <div className="flex justify-between items-center px-2">
             <div className="flex flex-col items-center gap-1.5">
               <span className="text-[#7a7d85] text-[11px]">هدف</span>
@@ -170,12 +176,12 @@ export function CalorieCard() {
           </div>
         </div>
 
-        {/* 2. باکس نوارهای ماکرو (دقیقاً متصل به پایین بدون هیچ خط مزاحمی) */}
+        {/* نوارهای ماکرو (داینامیک) */}
         <div className="px-4 py-4 flex flex-col items-center gap-3">
           <div className="flex justify-between items-center w-full gap-2">
-            {/* آب */}
+            {/* پروتئین */}
             <div className="flex items-center gap-1.5 flex-1">
-              <div className="w-4 h-4 flex justify-center items-center text-[#b072ff]">
+              <div className="w-4 h-4 flex justify-center items-center text-[#ff7a7a]">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -183,13 +189,14 @@ export function CalorieCard() {
                   strokeWidth="2.5"
                   className="w-full h-full"
                 >
-                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
                 </svg>
               </div>
-              <div className="flex-1 h-[5px] bg-[#2a2438] rounded-full overflow-hidden relative">
+              <div className="flex-1 h-[5px] bg-[#2f2221] rounded-full overflow-hidden relative">
                 <div
-                  className="absolute right-0 top-0 h-full bg-[#b072ff] rounded-full"
-                  style={{ width: "0%" }}
+                  className="absolute right-0 top-0 h-full bg-[#ff7a7a] rounded-full"
+                  style={{ width: `${proteinPct}%` }}
                 ></div>
               </div>
             </div>
@@ -212,14 +219,14 @@ export function CalorieCard() {
               <div className="flex-1 h-[5px] bg-[#2e2a1f] rounded-full overflow-hidden relative">
                 <div
                   className="absolute right-0 top-0 h-full bg-[#ffdb40] rounded-full"
-                  style={{ width: "0%" }}
+                  style={{ width: `${carbsPct}%` }}
                 ></div>
               </div>
             </div>
 
-            {/* پروتئین */}
+            {/* قند */}
             <div className="flex items-center gap-1.5 flex-1">
-              <div className="w-4 h-4 flex justify-center items-center text-[#ff7a7a]">
+              <div className="w-4 h-4 flex justify-center items-center text-[#b072ff]">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -227,25 +234,21 @@ export function CalorieCard() {
                   strokeWidth="2.5"
                   className="w-full h-full"
                 >
-                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
                 </svg>
               </div>
-              <div className="flex-1 h-[5px] bg-[#2f2221] rounded-full overflow-hidden relative">
+              <div className="flex-1 h-[5px] bg-[#2a2438] rounded-full overflow-hidden relative">
                 <div
-                  className="absolute right-0 top-0 h-full bg-[#ff7a7a] rounded-full"
-                  style={{ width: "0%" }}
+                  className="absolute right-0 top-0 h-full bg-[#b072ff] rounded-full"
+                  style={{ width: `${sugarPct}%` }}
                 ></div>
               </div>
             </div>
           </div>
-
-          {/* خط کوچک ته باکس */}
           <div className="w-6 h-[3px] bg-[#2d3036] rounded-full mt-1"></div>
         </div>
       </div>
 
-      {/* 3. ایندیکیتورهای پایین */}
       <div className="flex justify-center items-center gap-1.5 mt-3">
         <div className="w-1.5 h-1.5 rounded-full bg-[#2d3036]"></div>
         <div className="w-4 h-1.5 rounded-full bg-[#00d287]"></div>

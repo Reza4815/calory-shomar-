@@ -24,7 +24,7 @@ export function Splash() {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      className="frame-fixed top-0 z-[80] flex h-dvh flex-col items-center justify-center bg-bg"
+      className="fixed inset-0 z-[80] flex h-dvh flex-col items-center justify-center bg-[#0b0c10]"
       exit={{ opacity: 0, scale: reduce ? 1 : 1.03 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
@@ -43,7 +43,9 @@ export function Splash() {
           priority
         />
       </motion.div>
-      <h1 className="mt-7 text-3xl font-extrabold tracking-tight">رفا</h1>
+      <h1 className="mt-7 text-3xl font-extrabold tracking-tight text-white">
+        رفا
+      </h1>
       <p className="mt-2 text-sm text-sub">سلامت و سبک زندگی، هر روز</p>
       <div className="mt-8 flex gap-1.5">
         {[0, 1, 2].map((i) => (
@@ -65,8 +67,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const ready = mounted && hydrated;
 
   return (
-    <div className="app-frame">
-      {ready && children}
+    // اعمال پدینگ PWA و حذف محدودیت عرض
+    <div className="w-full min-h-screen bg-[#0b0c10] flex flex-col pt-[env(safe-area-inset-top)]">
+      {ready && <main className="flex-1 w-full relative">{children}</main>}
       <BottomNav />
       <Toasts />
       <AnimatePresence>{!ready && <Splash key="splash" />}</AnimatePresence>

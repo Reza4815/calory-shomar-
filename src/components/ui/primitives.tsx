@@ -358,7 +358,7 @@ export function PageBody({
       initial={reduce ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      // حذف max-w برای فول اسکرین شدن در وب
+      // حذف max-w برای فول اسکرین شدن
       className={cx(
         "relative w-full min-h-screen bg-[#0b0c10] overflow-hidden pb-36 pt-[env(safe-area-inset-top)]",
         className,
@@ -374,8 +374,7 @@ export function PageBody({
         <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px] will-change-transform" />
       </div>
 
-      {/* محتوا با پدینگ داخلی تا از لبه‌ها فاصله بگیرد */}
-      <div className="relative z-10 px-4">{children}</div>
+      <div className="relative z-10 px-4 w-full">{children}</div>
     </motion.main>
   );
 }

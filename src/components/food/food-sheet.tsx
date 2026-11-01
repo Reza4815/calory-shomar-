@@ -48,7 +48,17 @@ export function FoodSheet({
 
   const add = () => {
     if (!food) return;
+
+    // دیباگ: بررسی می‌کنیم آیا داده‌ها درست هستند یا نه
+    console.log("Adding food:", {
+      meal,
+      foodName: food.name,
+      grams,
+      caloriesToAdd: Math.round(food.calories * (grams / food.grams)),
+    });
+
     addFoodEntry(meal, food, grams);
+
     toast({
       title: "به " + MEAL_LABELS[meal] + " اضافه شد",
       description: food.name,
