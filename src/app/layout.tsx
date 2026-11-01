@@ -36,7 +36,11 @@ export const metadata: Metadata = {
     title: "رفا",
   },
   formatDetection: { telephone: false },
-  icons: { icon: [{ url: "/icons/icon-512.png", type: "image/png" }] },
+  icons: {
+    icon: [{ url: "/icons/icon-512.png", type: "image/png" }],
+    // این خط برای آیکون آیفون (Add to Home Screen) اضافه شد
+    apple: "/apple-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
