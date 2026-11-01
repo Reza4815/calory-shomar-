@@ -70,8 +70,13 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="relative flex flex-col min-h-[100dvh] bg-[#0b0c10] overflow-x-hidden">
       {/* گلوهای ثابت پس‌زمینه */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px]" />
+        {/* گلو سبز - محدودتر و دقیقا پشت آیکون برگ */}
+        <div className="absolute top-[-60px] right-[-40px] h-[250px] w-[250px] rounded-full bg-[#00d287] opacity-[0.12] blur-[90px]" />
+
+        {/* گلو قرمز */}
         <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px]" />
+
+        {/* گلو بنفش */}
         <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px]" />
       </div>
 
