@@ -39,7 +39,6 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/icons/icon-512.png", type: "image/png" }],
     // این خط برای آیکون آیفون (Add to Home Screen) اضافه شد
-    apple: "/apple-icon.png",
   },
 };
 
