@@ -59,7 +59,6 @@ export function useDailyProgress() {
 
 // --- گیج (نیم‌دایره‌ای) ---
 const GAUGE = { w: 160, h: 80, stroke: 12, r: 68, cx: 80, cy: 80 } as const;
-
 function CalorieGauge({ progress }: { progress: number }) {
   const reduce = useReducedMotion();
   const { w, h, stroke, r, cx, cy } = GAUGE;
@@ -72,9 +71,6 @@ function CalorieGauge({ progress }: { progress: number }) {
       className="relative shrink-0 flex items-center justify-center"
       style={{ width: w, height: h }}
     >
-      {/* گلو قرمز زیر خود گیج */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#ff5c5c] blur-[40px] opacity-20 rounded-full pointer-events-none"></div>
-
       <svg
         className="absolute top-0 left-0 rotate-180 z-10"
         width={w}
@@ -108,11 +104,19 @@ function CalorieGauge({ progress }: { progress: number }) {
             reduce ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }
           }
           style={{
-            filter: `drop-shadow(0 0 6px rgba(255, 92, 92, 0.8)) drop-shadow(0 0 12px rgba(255, 92, 92, ${p * 0.6}))`,
+            // شدت گلو کمتر و متعادل شد
+            filter: `drop-shadow(0 0 6px rgba(255, 92, 92, 0.6)) drop-shadow(0 0 12px rgba(255, 92, 92, ${0.3 + p * 0.3}))`,
           }}
         />
       </svg>
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center z-20">
+
+      {/* آیکون آتش با گلو ملایم */}
+      <div
+        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center z-20"
+        style={{
+          filter: "drop-shadow(0 0 8px rgba(255, 92, 92, 0.5))",
+        }}
+      >
         <Flame className="w-full h-full" strokeWidth={2.2} />
       </div>
     </div>
@@ -137,14 +141,8 @@ export function CalorieCard() {
 
   return (
     <div className="w-full mt-4 flex flex-col font-sans text-white items-center relative">
-      {/* لایه گلو زیر کارت اصلی */}
-      <div className="absolute top-0 w-full h-[200px] pointer-events-none overflow-visible">
-        <div className="absolute top-10 left-10 w-40 h-40 bg-[#00d287] blur-[60px] opacity-10 rounded-full"></div>
-        <div className="absolute top-10 right-10 w-40 h-40 bg-[#ff5c5c] blur-[60px] opacity-10 rounded-full"></div>
-      </div>
-
-      {/* کارت اصلی - استایل شیشه‌ای بسیار شفاف */}
-      <div className="relative w-full bg-white/[0.03] backdrop-blur-xl rounded-[32px] border border-white/[0.12] overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.2)] z-10">
+      {/* کارت اصلی - استایل شیشه‌ای دقیقا مثل کپسول */}
+      <div className="relative w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.1] rounded-[32px] overflow-hidden flex flex-col shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] z-10">
         <div className="bg-transparent rounded-b-[20px] px-5 pt-6 pb-5">
           <div className="flex justify-between items-center mb-5">
             <div className="flex flex-col items-start gap-1">
@@ -162,27 +160,34 @@ export function CalorieCard() {
             <CalorieGauge progress={progress} />
           </div>
 
-          <div className="w-full h-[1px] bg-white/[0.1] mb-4"></div>
+          <div className="w-full h-[1px] bg-white/[0.08] mb-4"></div>
 
-          <div className="flex justify-between items-center px-2">
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="text-white/50 text-[11px]">هدف</span>
-              <span className="text-[13px] font-bold text-[#00d287] flex items-center gap-1">
-                {fa(calorieGoal)}
+          <div className="flex justify-between items-center px-2 mt-1">
+            <div className="flex flex-col items-center gap-1.5 flex-1">
+              <span className="text-white/50 text-[11px]">دریافتی</span>
+              <span className="text-[13px] font-bold text-[#3b82f6] tnum flex items-center gap-1.5">
+                <span className="w-[6px] h-[6px] rounded-full bg-[#3b82f6]"></span>
+                {fa(calories)}
               </span>
             </div>
-            <div className="flex flex-col items-center gap-1.5">
+
+            <div className="w-[1px] h-8 bg-white/10"></div>
+
+            <div className="flex flex-col items-center gap-1.5 flex-1">
               <span className="text-white/50 text-[11px]">سوزانده</span>
-              <span className="text-[13px] font-bold text-[#e2e2e2] flex items-center gap-1">
-                <span className="w-[6px] h-[6px] rounded-full bg-[#ff9500]"></span>{" "}
+              <span className="text-[13px] font-bold text-[#ff9500] tnum flex items-center gap-1.5">
+                <span className="w-[6px] h-[6px] rounded-full bg-[#ff9500]"></span>
                 {fa(burned)}
               </span>
             </div>
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="text-white/50 text-[11px]">دریافتی</span>
-              <span className="text-[13px] font-bold text-[#e2e2e2] flex items-center gap-1">
-                <span className="w-[6px] h-[6px] rounded-full bg-[#3b82f6]"></span>{" "}
-                {fa(calories)}
+
+            <div className="w-[1px] h-8 bg-white/10"></div>
+
+            <div className="flex flex-col items-center gap-1.5 flex-1">
+              <span className="text-white/50 text-[11px]">هدف</span>
+              <span className="text-[13px] font-bold text-[#00d287] tnum flex items-center gap-1.5">
+                <span className="w-[6px] h-[6px] rounded-full bg-[#00d287]"></span>
+                {fa(calorieGoal)}
               </span>
             </div>
           </div>
