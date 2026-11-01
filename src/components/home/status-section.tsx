@@ -12,6 +12,8 @@ import {
   Scale,
   HeartPulse,
   ChevronLeft,
+  Lock,
+  Check,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -174,12 +176,12 @@ export function KaraCard() {
   const message =
     mealsLogged === 0
       ? {
-          m: "اولین وعده‌تون رو ثبت کنین",
-          d: "با ثبت غذاهای امروز، کالری و مواد مغذی هر وعده رو شفاف ببینین.",
+          m: "اولین وعده‌تون رو ثبت کنید",
+          d: "با ثبت غذاهای امروز، کالری و مواد مغذی هر وعده رو شفاف ببینید.",
         }
       : {
-          m: "وعده‌های بعدی رو هم ثبت کنین",
-          d: "هر وعده‌ای که ثبت کنین، تصویر بهتری از انرژی امروزتون به دست میارین.",
+          m: "وعده‌های بعدی رو هم ثبت کنید",
+          d: "هر وعده‌ای که ثبت کنید، تصویر بهتری از انرژی امروزتون به دست میارید.",
         };
 
   return (
@@ -223,9 +225,7 @@ export function WaterCard() {
   };
 
   return (
-    <section
-      className="relative overflow-hidden rounded-[28px] border border-white/[0.03] bg-[#16181c] p-4 mt-4"
-    >
+    <section className="relative overflow-hidden rounded-[28px] border border-white/[0.03] bg-[#16181c] p-4 mt-4">
       <div className="relative flex items-center gap-3">
         <span
           className="grid h-9 w-9 shrink-0 place-items-center rounded-full"
@@ -301,10 +301,14 @@ export function WeightCard() {
 
   return (
     <Card
-      className="relative mt-4 overflow-hidden p-4"
+      className="relative mt-4 overflow-hidden p-4 bg-[#16181c] border border-white/[0.03]"
       onClick={() => router.push("/weight")}
     >
-      <div className="relative">
+      {/* گلو سبز از سمت پایین-راست (دقیقاً مثل عکس) */}
+      <div className="absolute -bottom-20 -right-20 w-[300px] h-[250px] bg-[#00d287] opacity-25 blur-[80px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-10 -right-10 w-[200px] h-[150px] bg-[#00d287] opacity-15 blur-[50px] rounded-full pointer-events-none" />
+
+      <div className="relative z-10">
         <div className="flex items-center gap-3">
           <IconBadge
             icon={<Scale className="h-4 w-4" />}
@@ -315,44 +319,40 @@ export function WeightCard() {
             <h3 className="text-[14px] font-bold">پیشرفت وزن</h3>
             <p className="text-[10px] text-sub">آخرین وضعیت وزن</p>
           </div>
-          <span className="grid h-7 w-7 place-items-center rounded-full border border-border/60 bg-surface text-sub">
-            <ChevronLeft className="h-3.5 w-3.5" />
-          </span>
+          <div className="flex items-center gap-3 text-sub/50">
+            <Lock className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
+          </div>
         </div>
         <div className="mt-3 flex items-end justify-between">
           <div>
-            <p className="text-[28px] font-extrabold leading-none tnum">
+            <p className="text-[32px] font-extrabold leading-none tnum text-white">
               {fa(current, 1)}{" "}
-              <span className="text-[11px] font-semibold text-sub">کیلو</span>
+              <span className="text-[12px] font-semibold text-white/60">
+                کیلو
+              </span>
             </p>
-            <p className="mt-1 text-[10px] text-muted">وزن فعلی</p>
+            <p className="mt-1 text-[10px] text-white/50">وزن فعلی</p>
           </div>
-          <select
-            aria-label="وضعیت وزن"
-            value={status}
-            onClick={(e) => e.stopPropagation()}
-            onChange={(e) =>
-              setStatus(e.target.value as "کاهش" | "ثابت" | "افزایش")
-            }
-            className="rounded-full border border-border/70 bg-surface px-2.5 py-1.5 text-[10px] font-semibold text-sub outline-none focus:border-primary/60"
-          >
-            <option value="کاهش">در حال کاهش</option>
-            <option value="ثابت">ثابت</option>
-            <option value="افزایش">در حال افزایش</option>
-          </select>
+          <div className="rounded-full border border-[#00d287]/30 bg-[#00d287]/10 px-3 py-1.5 flex items-center gap-1.5">
+            <Check className="h-3 w-3 text-[#00d287]" />
+            <span className="text-[10px] font-bold text-[#00d287]">
+              تو بازه‌ای
+            </span>
+          </div>
         </div>
-        <div className="mt-3">
-          <div className="mb-1.5 flex items-center justify-between text-[10px]">
-            <span className="text-sub">
-              هدف: {fa(goals.targetWeightKg, 1)} کیلو
-            </span>
-            <span className="font-semibold text-primary tnum">
-              {remaining > 0
-                ? `${fa(remaining, 1)} کیلو تا هدف`
-                : "به هدف رسیدی"}
+        <div className="mt-4">
+          <div className="h-[6px] w-full bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-l from-[#00d287] to-[#128a5f] rounded-full"
+              style={{ width: `${done * 100}%` }}
+            />
+          </div>
+          <div className="mt-2 flex justify-center">
+            <span className="text-[10px] font-medium text-white/60">
+              بازه‌ی تثبیت ۶۹ تا ۷۱ کیلو
             </span>
           </div>
-          <ProgressBar progress={done} height={6} />
         </div>
       </div>
     </Card>

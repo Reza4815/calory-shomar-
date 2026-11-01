@@ -1,13 +1,13 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { Flame, Beef, Wheat, Candy } from "lucide-react";
 import { AnimatedNumber } from "@/components/ui/primitives";
 import { cx } from "@/lib/cx";
 import { clamp, dayKey, fa } from "@/lib/format";
 import { useBodyStore, useNutritionStore, useProfileStore } from "@/stores";
 import type { FoodLogEntry } from "@/lib/types";
-import { useMemo } from "react";
+import { useState } from "react";
 
 const NO_ENTRIES: FoodLogEntry[] = [];
 
@@ -59,6 +59,7 @@ export function useDailyProgress() {
 
 // --- گیج (نیم‌دایره‌ای) ---
 const GAUGE = { w: 160, h: 80, stroke: 12, r: 68, cx: 80, cy: 80 } as const;
+
 function CalorieGauge({ progress }: { progress: number }) {
   const reduce = useReducedMotion();
   const { w, h, stroke, r, cx, cy } = GAUGE;
@@ -104,13 +105,11 @@ function CalorieGauge({ progress }: { progress: number }) {
             reduce ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }
           }
           style={{
-            // شدت گلو کمتر و متعادل شد
             filter: `drop-shadow(0 0 6px rgba(255, 92, 92, 0.6)) drop-shadow(0 0 12px rgba(255, 92, 92, ${0.3 + p * 0.3}))`,
           }}
         />
       </svg>
 
-      {/* آیکون آتش با گلو ملایم */}
       <div
         className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center z-20"
         style={{
@@ -127,6 +126,10 @@ export function CalorieCard() {
   const { calories, burned, calorieGoal, protein, carbs, sugar } =
     useDailyProgress();
 
+  const remaining = Math.max(0, calorieGoal - calories);
+  const over = calorieGoal - calories < 0;
+  const progress = clamp(calories / Math.max(1, calorieGoal), 0, 1);
+
   const proteinGoal = 150;
   const carbsGoal = 250;
   const sugarGoal = 50;
@@ -135,63 +138,149 @@ export function CalorieCard() {
   const carbsPct = Math.min(100, (carbs / carbsGoal) * 100);
   const sugarPct = Math.min(100, (sugar / sugarGoal) * 100);
 
-  const remaining = Math.max(0, calorieGoal - calories);
-  const over = calorieGoal - calories < 0;
-  const progress = clamp(calories / Math.max(1, calorieGoal), 0, 1);
+  const [activeCard, setActiveCard] = useState(0);
 
   return (
     <div className="w-full mt-4 flex flex-col font-sans text-white items-center relative">
-      {/* کارت اصلی - استایل شیشه‌ای دقیقا مثل کپسول */}
-      <div className="relative w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.1] rounded-[32px] overflow-hidden flex flex-col shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] z-10">
-        <div className="bg-transparent rounded-b-[20px] px-5 pt-6 pb-5">
-          <div className="flex justify-between items-center mb-5">
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-white/60 text-[12px] font-medium">
-                کالری باقی‌مانده
-              </span>
-              <AnimatedNumber
-                value={remaining}
-                className={cx(
-                  "text-[42px] font-extrabold leading-none tracking-[-1px]",
-                  over ? "text-[#ff5c5c]" : "text-white",
-                )}
-              />
-            </div>
-            <CalorieGauge progress={progress} />
-          </div>
+      {/* کانتینر کارت‌ها */}
+      <div className="relative w-full h-[220px] overflow-hidden rounded-[32px] z-10">
+        <AnimatePresence initial={false} mode="wait">
+          {/* اسلاید اول (کارت شیشه‌ای اصلی) */}
+          {activeCard === 0 && (
+            <motion.div
+              key="card-1"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.4}
+              onDragEnd={(e, info) => {
+                if (info.offset.x < -50 || info.velocity.x < -300) {
+                  setActiveCard(1);
+                }
+              }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 w-full h-full bg-white/[0.02] backdrop-blur-md border border-white/[0.1] rounded-[32px] flex flex-col shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] cursor-grab active:cursor-grabbing"
+            >
+              <div className="bg-transparent rounded-b-[20px] px-5 pt-6 pb-5 h-full flex flex-col justify-between">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="flex flex-col items-start gap-1 ml-4">
+                    <span className="text-white/60 text-[12px] font-medium">
+                      کالری باقی‌مانده
+                    </span>
+                    <AnimatedNumber
+                      value={remaining}
+                      className={cx(
+                        "text-[42px] font-extrabold leading-none tracking-[-1px]",
+                        over ? "text-[#ff5c5c]" : "text-white",
+                      )}
+                    />
+                  </div>
+                  <CalorieGauge progress={progress} />
+                </div>
 
-          <div className="w-full h-[1px] bg-white/[0.08] mb-4"></div>
+                <div>
+                  <div className="w-full h-[1px] bg-white/[0.08] mb-4"></div>
+                  <div className="flex justify-between items-center px-2 mt-1">
+                    <div className="flex flex-col items-center gap-1.5 flex-1">
+                      <span className="text-white/50 text-[11px]">دریافتی</span>
+                      <span className="text-[13px] font-bold text-[#3b82f6] tnum flex items-center gap-1.5">
+                        <span className="w-[6px] h-[6px] rounded-full bg-[#3b82f6]"></span>
+                        {fa(calories)}
+                      </span>
+                    </div>
+                    <div className="w-[1px] h-8 bg-white/10"></div>
+                    <div className="flex flex-col items-center gap-1.5 flex-1">
+                      <span className="text-white/50 text-[11px]">سوزانده</span>
+                      <span className="text-[13px] font-bold text-[#ff9500] tnum flex items-center gap-1.5">
+                        <span className="w-[6px] h-[6px] rounded-full bg-[#ff9500]"></span>
+                        {fa(burned)}
+                      </span>
+                    </div>
+                    <div className="w-[1px] h-8 bg-white/10"></div>
+                    <div className="flex flex-col items-center gap-1.5 flex-1">
+                      <span className="text-white/50 text-[11px]">هدف</span>
+                      <span className="text-[13px] font-bold text-[#00d287] tnum flex items-center gap-1.5">
+                        <span className="w-[6px] h-[6px] rounded-full bg-[#00d287]"></span>
+                        {fa(calorieGoal)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
-          <div className="flex justify-between items-center px-2 mt-1">
-            <div className="flex flex-col items-center gap-1.5 flex-1">
-              <span className="text-white/50 text-[11px]">دریافتی</span>
-              <span className="text-[13px] font-bold text-[#3b82f6] tnum flex items-center gap-1.5">
-                <span className="w-[6px] h-[6px] rounded-full bg-[#3b82f6]"></span>
-                {fa(calories)}
-              </span>
-            </div>
+          {/* اسلاید دوم (شیشه‌ای و هماهنگ) */}
+          {activeCard === 1 && (
+            <motion.div
+              key="card-2"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.4}
+              onDragEnd={(e, info) => {
+                if (info.offset.x > 50 || info.velocity.x > 300) {
+                  setActiveCard(0);
+                }
+              }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 w-full h-full bg-white/[0.02] backdrop-blur-md border border-white/[0.1] rounded-[32px] flex flex-col shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] cursor-grab active:cursor-grabbing overflow-hidden"
+            >
+              <div className="relative z-10 h-full flex flex-col justify-between px-6 py-6">
+                <div className="flex justify-between items-start">
+                  <div className="w-10 h-10 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center backdrop-blur-md">
+                    <Flame className="w-5 h-5 text-[#00d287]" />
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] text-white/40 mb-0.5">
+                      هدف روزانه
+                    </span>
+                    <span className="text-[13px] font-bold text-white tnum">
+                      {fa(calorieGoal)}{" "}
+                      <span className="text-[9px] text-white/40">kcal</span>
+                    </span>
+                  </div>
+                </div>
 
-            <div className="w-[1px] h-8 bg-white/10"></div>
+                <div className="flex flex-col items-center justify-center mt-2">
+                  <span className="text-[11px] font-medium text-white/40 tracking-widest uppercase mb-1">
+                    Remaining
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <AnimatedNumber
+                      value={remaining}
+                      className="text-[48px] font-black leading-none tracking-tighter text-white"
+                    />
+                    <span className="text-[14px] font-bold text-[#00d287]">
+                      kcal
+                    </span>
+                  </div>
+                </div>
 
-            <div className="flex flex-col items-center gap-1.5 flex-1">
-              <span className="text-white/50 text-[11px]">سوزانده</span>
-              <span className="text-[13px] font-bold text-[#ff9500] tnum flex items-center gap-1.5">
-                <span className="w-[6px] h-[6px] rounded-full bg-[#ff9500]"></span>
-                {fa(burned)}
-              </span>
-            </div>
-
-            <div className="w-[1px] h-8 bg-white/10"></div>
-
-            <div className="flex flex-col items-center gap-1.5 flex-1">
-              <span className="text-white/50 text-[11px]">هدف</span>
-              <span className="text-[13px] font-bold text-[#00d287] tnum flex items-center gap-1.5">
-                <span className="w-[6px] h-[6px] rounded-full bg-[#00d287]"></span>
-                {fa(calorieGoal)}
-              </span>
-            </div>
-          </div>
-        </div>
+                <div className="flex flex-col gap-2 mt-4">
+                  <div className="flex justify-between items-end">
+                    <span className="text-[10px] text-white/50">
+                      دریافتی: {fa(calories)}
+                    </span>
+                    <span className="text-[10px] text-[#00d287] font-bold">
+                      {fa(Math.round(progress * 100))}%
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/[0.08] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-l from-[#00d287] to-[#128a5f] rounded-full"
+                      style={{ width: `${progress * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* کپسول ماکروها */}
@@ -275,9 +364,24 @@ export function CalorieCard() {
         </div>
       </div>
 
-      <div className="flex justify-center items-center gap-1.5 mt-3">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#2d3036]"></div>
-        <div className="w-4 h-1.5 rounded-full bg-[#00d287]"></div>
+      {/* نقطه‌های داینامیک (ترتیب اصلاح شده) */}
+      <div className="flex justify-center items-center gap-1.5 mt-3 z-20">
+        {/* نقطه سمت راست (اسلاید 2) */}
+        <button
+          onClick={() => setActiveCard(1)}
+          className={cx(
+            "h-1.5 rounded-full transition-all duration-300",
+            activeCard === 1 ? "w-4 bg-[#00d287]" : "w-1.5 bg-[#2d3036]",
+          )}
+        />
+        {/* نقطه سمت چپ (اسلاید 1) */}
+        <button
+          onClick={() => setActiveCard(0)}
+          className={cx(
+            "h-1.5 rounded-full transition-all duration-300",
+            activeCard === 0 ? "w-4 bg-[#00d287]" : "w-1.5 bg-[#2d3036]",
+          )}
+        />
       </div>
     </div>
   );
