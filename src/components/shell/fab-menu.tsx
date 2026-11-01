@@ -29,15 +29,80 @@ interface Action {
   onTap: () => void;
 }
 
+const ACTIONS: Omit<Action, "onTap">[] = [
+  {
+    label: "خواب",
+    icon: <Moon className="h-[22px] w-[22px]" />,
+    color: "#9B78E8",
+    bg: "rgba(155,120,232,0.16)",
+  },
+  {
+    label: "میان‌وعده",
+    icon: <Apple className="h-[22px] w-[22px]" />,
+    color: "#F2A94B",
+    bg: "rgba(242,169,75,0.15)",
+  },
+  {
+    label: "ناهار",
+    icon: <UtensilsCrossed className="h-[22px] w-[22px]" />,
+    color: "#20C98A",
+    bg: "rgba(32,201,138,0.14)",
+  },
+  {
+    label: "صبحانه",
+    icon: <Coffee className="h-[22px] w-[22px]" />,
+    color: "#F2A94B",
+    bg: "rgba(242,169,75,0.15)",
+  },
+  {
+    label: "حال من",
+    icon: <HeartPulse className="h-[22px] w-[22px]" />,
+    color: "#F16B68",
+    bg: "rgba(241,107,104,0.15)",
+  },
+  {
+    label: "وزن",
+    icon: <Scale className="h-[22px] w-[22px]" />,
+    color: "#20C98A",
+    bg: "rgba(32,201,138,0.14)",
+  },
+  {
+    label: "آب",
+    icon: <Droplet className="h-[22px] w-[22px]" />,
+    color: "#5599F2",
+    bg: "rgba(85,153,242,0.14)",
+  },
+  {
+    label: "فعالیت",
+    icon: <Dumbbell className="h-[22px] w-[22px]" />,
+    color: "#F2A94B",
+    bg: "rgba(242,169,75,0.15)",
+  },
+  {
+    label: "آشپزخانه من",
+    icon: <ChefHat className="h-[22px] w-[22px]" />,
+    color: "#9B78E8",
+    bg: "rgba(155,120,232,0.16)",
+  },
+  {
+    label: "امروز من",
+    icon: <History className="h-[22px] w-[22px]" />,
+    color: "#9BA3AE",
+    bg: "rgba(155,163,174,0.12)",
+  },
+];
+
 export function FabMenu() {
   const [open, setOpen] = useState(false);
   const [waterOpen, setWaterOpen] = useState(false);
   const router = useRouter();
   const reduce = useReducedMotion();
 
+  const close = () => setOpen(false);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -53,26 +118,32 @@ export function FabMenu() {
   }, [open]);
 
   const go = (href: string) => () => {
-    setOpen(false);
-    router.push(href);
+    close();
+    // زمان کمی صبر می‌کنیم تا انیمیشن خروج منو اجرا شود، بعد صفحه عوض شود
+    setTimeout(() => router.push(href), 150);
   };
 
   const actions: Action[] = [
-    { label: "خواب", icon: <Moon className="h-[22px] w-[22px]" />, color: "#9B78E8", bg: "rgba(155,120,232,0.16)", onTap: go("/sleep") },
-    { label: "میان‌وعده", icon: <Apple className="h-[22px] w-[22px]" />, color: "#F2A94B", bg: "rgba(242,169,75,0.15)", onTap: go("/food?meal=snack") },
-    { label: "ناهار", icon: <UtensilsCrossed className="h-[22px] w-[22px]" />, color: "#20C98A", bg: "rgba(32,201,138,0.14)", onTap: go("/food?meal=lunch") },
-    { label: "صبحانه", icon: <Coffee className="h-[22px] w-[22px]" />, color: "#F2A94B", bg: "rgba(242,169,75,0.15)", onTap: go("/food?meal=breakfast") },
-    { label: "حال من", icon: <HeartPulse className="h-[22px] w-[22px]" />, color: "#F16B68", bg: "rgba(241,107,104,0.15)", onTap: go("/mood") },
-    { label: "وزن", icon: <Scale className="h-[22px] w-[22px]" />, color: "#20C98A", bg: "rgba(32,201,138,0.14)", onTap: go("/weight") },
-    { label: "آب", icon: <Droplet className="h-[22px] w-[22px]" />, color: "#5599F2", bg: "rgba(85,153,242,0.14)", onTap: () => { setOpen(false); setWaterOpen(true); } },
-    { label: "فعالیت", icon: <Dumbbell className="h-[22px] w-[22px]" />, color: "#F2A94B", bg: "rgba(242,169,75,0.15)", onTap: go("/activity") },
-    { label: "آشپزخانه من", icon: <ChefHat className="h-[22px] w-[22px]" />, color: "#9B78E8", bg: "rgba(155,120,232,0.16)", onTap: go("/kitchen") },
-    { label: "امروز من", icon: <History className="h-[22px] w-[22px]" />, color: "#9BA3AE", bg: "rgba(155,163,174,0.12)", onTap: go("/today") },
+    { ...ACTIONS[0], onTap: go("/sleep") },
+    { ...ACTIONS[1], onTap: go("/food?meal=snack") },
+    { ...ACTIONS[2], onTap: go("/food?meal=lunch") },
+    { ...ACTIONS[3], onTap: go("/food?meal=breakfast") },
+    { ...ACTIONS[4], onTap: go("/mood") },
+    { ...ACTIONS[5], onTap: go("/weight") },
+    {
+      ...ACTIONS[6],
+      onTap: () => {
+        close();
+        setWaterOpen(true);
+      },
+    },
+    { ...ACTIONS[7], onTap: go("/activity") },
+    { ...ACTIONS[8], onTap: go("/kitchen") },
+    { ...ACTIONS[9], onTap: go("/today") },
   ];
 
   return (
     <>
-      {/* Floating action button — physical right of the nav capsule (first in RTL row) */}
       <motion.button
         type="button"
         aria-label="ثبت سریع"
@@ -83,90 +154,136 @@ export function FabMenu() {
         <Plus className="h-7 w-7" strokeWidth={2.6} />
       </motion.button>
 
-      {/* dialog + sheet are portaled to <body> — inside .frame-fixed (transformed
-          bottom nav), `position: fixed` is relative to the nav strip and the
-          overlay gets clipped to ~80px at the bottom of the screen */}
       <Portal>
         <AnimatePresence>
           {open && (
-            <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true">
-            <motion.button
-              aria-label="بستن منو"
-              onClick={() => setOpen(false)}
-              className="absolute inset-0 cursor-default bg-[#05080C]/80 backdrop-blur-xl"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            />
+            <div
+              className="fixed inset-0 z-[60]"
+              role="dialog"
+              aria-modal="true"
+            >
+              {/* بک‌گراند با انیمیشن محو شدن سریع */}
+              <motion.button
+                aria-label="بستن منو"
+                onClick={close}
+                className="absolute inset-0 cursor-default bg-[#05080C]/90"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              />
 
-            <div className="no-scrollbar absolute inset-0 overflow-y-auto overscroll-contain">
-              <div className="relative mx-auto flex min-h-full w-full max-w-[430px] flex-col items-center justify-center px-6" style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 40px)" }}>
-                <motion.h2
-                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05, duration: 0.3 }}
-                  className="text-[26px] font-extrabold"
+              <div className="no-scrollbar absolute inset-0 overflow-y-auto overscroll-contain">
+                <div
+                  className="relative mx-auto flex min-h-full w-full max-w-[430px] flex-col items-center justify-center px-6"
+                  style={{
+                    paddingTop: "calc(env(safe-area-inset-top, 0px) + 24px)",
+                    paddingBottom:
+                      "calc(env(safe-area-inset-bottom, 0px) + 40px)",
+                  }}
                 >
-                  چی ثبت کنیم؟
-                </motion.h2>
-                <motion.p
-                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.3 }}
-                  className="mt-1.5 text-sm text-sub"
-                >
-                  مورد غذایی یا فعالیت امروزت رو انتخاب کن
-                </motion.p>
+                  <motion.h2
+                    initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8, transition: { duration: 0.12 } }}
+                    transition={{ duration: 0.15 }}
+                    className="text-[26px] font-extrabold"
+                  >
+                    چی ثبت کنیم؟
+                  </motion.h2>
 
-                <div className="mt-9 grid w-full max-w-[340px] grid-cols-4 gap-x-1.5 gap-y-6">
-                  {actions.map((a, i) => (
-                    <motion.button
-                      key={a.label}
-                      type="button"
-                      onClick={a.onTap}
-                      initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6, y: 14 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.12 } }}
-                      transition={{ type: "spring", stiffness: 380, damping: 26, delay: reduce ? 0 : 0.06 + i * 0.035 }}
-                      whileTap={reduce ? undefined : { scale: 0.9 }}
-                      className="flex w-16 flex-col items-center gap-2 justify-self-center"
-                    >
-                      <span
-                        className="grid h-16 w-16 place-items-center rounded-full border border-white/5"
-                        style={{ background: a.bg, color: a.color, boxShadow: `0 0 18px ${a.color}22` }}
+                  <motion.p
+                    initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                    transition={{ delay: 0.03, duration: 0.15 }}
+                    className="mt-1.5 text-sm text-sub"
+                  >
+                    مورد غذایی یا فعالیت امروزت رو انتخاب کن
+                  </motion.p>
+
+                  <div className="mt-9 grid w-full max-w-[340px] grid-cols-4 gap-x-1.5 gap-y-6">
+                    {actions.map((a, i) => (
+                      <motion.button
+                        key={a.label}
+                        type="button"
+                        onClick={a.onTap}
+                        initial={
+                          reduce ? { opacity: 0 } : { opacity: 0, scale: 0.7 }
+                        }
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{
+                          opacity: 0,
+                          scale: 0.8,
+                          // اینجا هیچ تاخیری (delay) نداریم تا فریز نشه
+                          transition: { duration: 0.12 },
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 32,
+                          delay: reduce ? 0 : 0.02 + i * 0.018,
+                        }}
+                        whileTap={reduce ? undefined : { scale: 0.9 }}
+                        className="flex w-16 flex-col items-center gap-2 justify-self-center"
                       >
-                        {a.icon}
-                      </span>
-                      <span className="text-[11px] font-semibold leading-none text-sub">{a.label}</span>
-                    </motion.button>
-                  ))}
+                        <span
+                          className="grid h-16 w-16 place-items-center rounded-full border border-white/5"
+                          style={{ background: a.bg, color: a.color }}
+                        >
+                          {a.icon}
+                        </span>
+                        <span className="text-[11px] font-semibold leading-none text-sub">
+                          {a.label}
+                        </span>
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 36px)" }}>
-              <motion.button
-                type="button"
-                aria-label="بستن"
-                onClick={() => setOpen(false)}
-                initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.5, rotate: -45 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                exit={{ opacity: 0, scale: 0.6 }}
-                transition={{ type: "spring", stiffness: 300, damping: 22, delay: reduce ? 0 : 0.18 }}
-                whileTap={{ scale: 0.88 }}
-                className="pointer-events-auto grid h-16 w-16 place-items-center rounded-full bg-primary text-[#05130D] ring-1 ring-primary/40 shadow-[0_10px_30px_rgba(32,201,138,0.5),0_0_60px_rgba(32,201,138,0.28)]"
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center"
+                style={{
+                  paddingBottom:
+                    "calc(env(safe-area-inset-bottom, 0px) + 36px)",
+                }}
               >
-                <X className="h-7 w-7" strokeWidth={2.6} />
-              </motion.button>
+                <motion.button
+                  type="button"
+                  aria-label="بستن"
+                  onClick={close}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.7,
+                    transition: { duration: 0.12 },
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 28,
+                    delay: reduce ? 0 : 0.1,
+                  }}
+                  whileTap={{ scale: 0.88 }}
+                  className="pointer-events-auto grid h-16 w-16 place-items-center rounded-full bg-primary text-[#05130D] ring-1 ring-primary/40 shadow-[0_10px_30px_rgba(32,201,138,0.5),0_0_60px_rgba(32,201,138,0.28)]"
+                >
+                  <X className="h-7 w-7" strokeWidth={2.6} />
+                </motion.button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </AnimatePresence>
       </Portal>
 
       <Portal>
-        <Sheet open={waterOpen} onClose={() => setWaterOpen(false)} title="آب‌شمار" subtitle="آبی که امروز نوشیدی رو ثبت کن">
+        <Sheet
+          open={waterOpen}
+          onClose={() => setWaterOpen(false)}
+          title="آب‌شماری"
+          subtitle="آب که امروز نوشیدی رو ثبت کن"
+        >
           <WaterControls />
         </Sheet>
       </Portal>
