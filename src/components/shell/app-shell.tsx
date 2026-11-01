@@ -24,7 +24,7 @@ export function Splash() {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      className="fixed inset-0 z-[80] flex h-dvh flex-col items-center justify-center bg-[#0b0c10]"
+      className="fixed inset-0 z-[80] flex h-[100dvh] flex-col items-center justify-center bg-[#0b0c10]"
       exit={{ opacity: 0, scale: reduce ? 1 : 1.03 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
@@ -67,9 +67,18 @@ export function AppShell({ children }: { children: ReactNode }) {
   const ready = mounted && hydrated;
 
   return (
-    // اعمال پدینگ PWA و حذف محدودیت عرض
-    <div className="w-full min-h-screen bg-[#0b0c10] flex flex-col pt-[env(safe-area-inset-top)]">
-      {ready && <main className="flex-1 w-full relative">{children}</main>}
+    <div className="w-full min-h-[100dvh] bg-[#0b0c10] flex flex-col relative">
+      {ready && (
+        <main
+          className="flex-1 w-full relative pb-[100px]"
+          style={{
+            // ترکیب safe-area با یک فاصله استاندارد برای زیبایی بیشتر
+            paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)",
+          }}
+        >
+          {children}
+        </main>
+      )}
       <BottomNav />
       <Toasts />
       <AnimatePresence>{!ready && <Splash key="splash" />}</AnimatePresence>

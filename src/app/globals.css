@@ -27,7 +27,6 @@
   --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
 }
 
-
 @keyframes pulse-soft {
   0%,
   100% {
@@ -45,21 +44,25 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  background-color: var(--color-bg);
+  height: 100%;
 }
 
-html,
 body {
   background: var(--color-bg);
-  overscroll-behavior-y: none;
-}
-
-body {
-  min-height: 100dvh;
-  font-family: var(--font-sans);
   color: var(--color-text);
+  font-family: var(--font-sans);
+  overscroll-behavior-y: none;
+  margin: 0;
+  padding: 0;
+  /* استفاده از 100vh و 100dvh برای پر کردن دقیق صفحه در آیفون */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  touch-action: manipulation;
 }
 
-/* Mobile app frame: centered capsule on desktop, full-bleed on phones */
 .app-frame {
   position: relative;
   width: 100%;
@@ -67,6 +70,9 @@ body {
   margin-inline: auto;
   min-height: 100dvh;
   background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 @media (min-width: 520px) {
@@ -75,8 +81,16 @@ body {
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(60% 42% at 50% 0%, rgba(32, 201, 138, 0.07), transparent 70%),
-      radial-gradient(40% 34% at 82% 88%, rgba(85, 153, 242, 0.05), transparent 70%);
+      radial-gradient(
+        60% 42% at 50% 0%,
+        rgba(32, 201, 138, 0.07),
+        transparent 70%
+      ),
+      radial-gradient(
+        40% 34% at 82% 88%,
+        rgba(85, 153, 242, 0.05),
+        transparent 70%
+      );
     pointer-events: none;
   }
   .app-frame {
@@ -85,7 +99,6 @@ body {
   }
 }
 
-/* Fixed overlays align with the app frame, not the full viewport */
 .frame-fixed {
   position: fixed;
   left: 50%;
@@ -111,13 +124,11 @@ textarea,
 select {
   font-family: inherit;
 }
-
 input::placeholder,
 textarea::placeholder {
   color: var(--color-muted);
 }
 
-/* remove number input spinners */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -128,7 +139,6 @@ input[type="number"] {
   appearance: textfield;
 }
 
-/* subtle grain-free focus rings */
 .focus-ring:focus-visible {
   outline: 2px solid rgba(32, 201, 138, 0.55);
   outline-offset: 2px;
