@@ -112,7 +112,7 @@ function CalorieGauge({ progress }: { progress: number }) {
           }}
         />
       </svg>
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center bg-[#16181c]/80 rounded-full z-20 backdrop-blur-sm border border-white/5">
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center z-20">
         <Flame className="w-full h-full" strokeWidth={2.2} />
       </div>
     </div>
@@ -144,7 +144,7 @@ export function CalorieCard() {
       </div>
 
       {/* کارت اصلی - استایل شیشه‌ای بسیار شفاف */}
-      <div className="relative w-full bg-white/[0.03] backdrop-blur-xl rounded-[28px] border border-white/[0.12] overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.2)] z-10">
+      <div className="relative w-full bg-white/[0.03] backdrop-blur-xl rounded-[32px] border border-white/[0.12] overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.2)] z-10">
         <div className="bg-transparent rounded-b-[20px] px-5 pt-6 pb-5">
           <div className="flex justify-between items-center mb-5">
             <div className="flex flex-col items-start gap-1">
