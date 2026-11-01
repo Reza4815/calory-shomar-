@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { Flame } from "lucide-react";
+import { Flame, Beef, Wheat, Candy } from "lucide-react";
 import { AnimatedNumber } from "@/components/ui/primitives";
 import { cx } from "@/lib/cx";
 import { clamp, dayKey, fa } from "@/lib/format";
@@ -58,7 +58,6 @@ export function useDailyProgress() {
 }
 
 // --- گیج (نیم‌دایره‌ای) ---
-// سایز بزرگ‌تر شد: w=160, h=80, stroke=12, r=68
 const GAUGE = { w: 160, h: 80, stroke: 12, r: 68, cx: 80, cy: 80 } as const;
 
 function CalorieGauge({ progress }: { progress: number }) {
@@ -73,15 +72,17 @@ function CalorieGauge({ progress }: { progress: number }) {
       className="relative shrink-0 flex items-center justify-center"
       style={{ width: w, height: h }}
     >
+      {/* گلو قرمز زیر خود گیج */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#ff5c5c] blur-[40px] opacity-20 rounded-full pointer-events-none"></div>
+
       <svg
-        className="absolute top-0 left-0 rotate-180"
+        className="absolute top-0 left-0 rotate-180 z-10"
         width={w}
         height={w}
         viewBox={`0 0 ${w} ${w}`}
         fill="none"
         aria-hidden="true"
       >
-        {/* خط پس‌زمینه */}
         <circle
           cx={cx}
           cy={cy}
@@ -92,7 +93,6 @@ function CalorieGauge({ progress }: { progress: number }) {
           strokeLinecap="round"
           strokeDasharray={`${halfCircumference} ${circumference}`}
         />
-        {/* خط پیشرفت با Glow */}
         <motion.circle
           cx={cx}
           cy={cy}
@@ -108,14 +108,11 @@ function CalorieGauge({ progress }: { progress: number }) {
             reduce ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }
           }
           style={{
-            // گلو قوی‌تر و محسوس‌تر
             filter: `drop-shadow(0 0 6px rgba(255, 92, 92, 0.8)) drop-shadow(0 0 12px rgba(255, 92, 92, ${p * 0.6}))`,
           }}
         />
       </svg>
-
-      {/* آیکون آتش بدون انیمیشن و پایین‌تر */}
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center bg-[#16181c] rounded-full z-10">
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 text-[#ff5c5c] flex justify-center items-center bg-[#16181c]/80 rounded-full z-20 backdrop-blur-sm border border-white/5">
         <Flame className="w-full h-full" strokeWidth={2.2} />
       </div>
     </div>
@@ -139,12 +136,19 @@ export function CalorieCard() {
   const progress = clamp(calories / Math.max(1, calorieGoal), 0, 1);
 
   return (
-    <div className="w-full mt-4 flex flex-col font-sans text-white">
-      <div className="w-full bg-[#141519] rounded-[28px] border border-white/[0.03] overflow-hidden flex flex-col">
-        <div className="bg-[#16181c] rounded-b-[20px] px-5 pt-6 pb-5">
+    <div className="w-full mt-4 flex flex-col font-sans text-white items-center relative">
+      {/* لایه گلو زیر کارت اصلی */}
+      <div className="absolute top-0 w-full h-[200px] pointer-events-none overflow-visible">
+        <div className="absolute top-10 left-10 w-40 h-40 bg-[#00d287] blur-[60px] opacity-10 rounded-full"></div>
+        <div className="absolute top-10 right-10 w-40 h-40 bg-[#ff5c5c] blur-[60px] opacity-10 rounded-full"></div>
+      </div>
+
+      {/* کارت اصلی - استایل شیشه‌ای بسیار شفاف */}
+      <div className="relative w-full bg-white/[0.03] backdrop-blur-xl rounded-[28px] border border-white/[0.12] overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(0,0,0,0.2)] z-10">
+        <div className="bg-transparent rounded-b-[20px] px-5 pt-6 pb-5">
           <div className="flex justify-between items-center mb-5">
             <div className="flex flex-col items-start gap-1">
-              <span className="text-[#8b8e98] text-[12px] font-medium">
+              <span className="text-white/60 text-[12px] font-medium">
                 کالری باقی‌مانده
               </span>
               <AnimatedNumber
@@ -158,24 +162,24 @@ export function CalorieCard() {
             <CalorieGauge progress={progress} />
           </div>
 
-          <div className="w-full h-[1px] bg-white/[0.04] mb-4"></div>
+          <div className="w-full h-[1px] bg-white/[0.1] mb-4"></div>
 
           <div className="flex justify-between items-center px-2">
             <div className="flex flex-col items-center gap-1.5">
-              <span className="text-[#7a7d85] text-[11px]">هدف</span>
+              <span className="text-white/50 text-[11px]">هدف</span>
               <span className="text-[13px] font-bold text-[#00d287] flex items-center gap-1">
                 {fa(calorieGoal)}
               </span>
             </div>
             <div className="flex flex-col items-center gap-1.5">
-              <span className="text-[#7a7d85] text-[11px]">سوزانده</span>
+              <span className="text-white/50 text-[11px]">سوزانده</span>
               <span className="text-[13px] font-bold text-[#e2e2e2] flex items-center gap-1">
                 <span className="w-[6px] h-[6px] rounded-full bg-[#ff9500]"></span>{" "}
                 {fa(burned)}
               </span>
             </div>
             <div className="flex flex-col items-center gap-1.5">
-              <span className="text-[#7a7d85] text-[11px]">دریافتی</span>
+              <span className="text-white/50 text-[11px]">دریافتی</span>
               <span className="text-[13px] font-bold text-[#e2e2e2] flex items-center gap-1">
                 <span className="w-[6px] h-[6px] rounded-full bg-[#3b82f6]"></span>{" "}
                 {fa(calories)}
@@ -183,73 +187,86 @@ export function CalorieCard() {
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="px-4 py-4 flex flex-col items-center gap-3">
-          <div className="flex justify-between items-center w-full gap-2">
-            <div className="flex items-center gap-1.5 flex-1">
-              <div className="w-4 h-4 flex justify-center items-center text-[#ff7a7a]">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="w-full h-full"
-                >
-                  <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+      {/* کپسول ماکروها */}
+      <div className="relative w-[85%] max-w-[340px] mt-4 z-20">
+        <div className="absolute inset-0 flex justify-between pointer-events-none px-2">
+          <div className="w-1/3 h-full bg-[#ff7a7a] blur-[32px] opacity-20 rounded-full translate-y-2"></div>
+          <div className="w-1/3 h-full bg-[#ffdb40] blur-[32px] opacity-20 rounded-full translate-y-2"></div>
+          <div className="w-1/3 h-full bg-[#b072ff] blur-[32px] opacity-20 rounded-full translate-y-2"></div>
+        </div>
+
+        <div className="relative w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.1] rounded-[24px] px-4 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] flex items-center justify-between gap-3">
+          {/* پروتئین */}
+          <div className="flex-1 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <Beef className="w-3 h-3 text-[#ff7a7a]" />
+                <span className="text-[9px] font-medium text-[#ff7a7a]">
+                  پروتئین
+                </span>
               </div>
-              <div className="flex-1 h-[5px] bg-[#2f2221] rounded-full overflow-hidden relative">
-                <div
-                  className="absolute right-0 top-0 h-full bg-[#ff7a7a] rounded-full"
-                  style={{ width: `${proteinPct}%` }}
-                ></div>
-              </div>
+              <span className="text-[11px] font-extrabold text-white tnum">
+                {fa(protein)}
+                <span className="text-[8px] text-white/50 font-normal">g</span>
+              </span>
             </div>
-
-            <div className="flex items-center gap-1.5 flex-1">
-              <div className="w-4 h-4 flex justify-center items-center text-[#ffdb40]">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-full h-full"
-                >
-                  <circle cx="9" cy="9" r="2" />
-                  <circle cx="15" cy="9" r="2" />
-                  <circle cx="9" cy="15" r="2" />
-                  <circle cx="15" cy="15" r="2" />
-                  <circle cx="12" cy="12" r="2" />
-                </svg>
-              </div>
-              <div className="flex-1 h-[5px] bg-[#2e2a1f] rounded-full overflow-hidden relative">
-                <div
-                  className="absolute right-0 top-0 h-full bg-[#ffdb40] rounded-full"
-                  style={{ width: `${carbsPct}%` }}
-                ></div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1.5 flex-1">
-              <div className="w-4 h-4 flex justify-center items-center text-[#b072ff]">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="w-full h-full"
-                >
-                  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                </svg>
-              </div>
-              <div className="flex-1 h-[5px] bg-[#2a2438] rounded-full overflow-hidden relative">
-                <div
-                  className="absolute right-0 top-0 h-full bg-[#b072ff] rounded-full"
-                  style={{ width: `${sugarPct}%` }}
-                ></div>
-              </div>
+            <div className="h-[3px] w-full bg-white/[0.05] rounded-full overflow-hidden relative">
+              <div
+                className="absolute right-0 top-0 h-full bg-[#ff7a7a] rounded-full"
+                style={{ width: `${proteinPct}%` }}
+              ></div>
             </div>
           </div>
-          <div className="w-6 h-[3px] bg-[#2d3036] rounded-full mt-1"></div>
+
+          <div className="w-[1px] h-8 bg-white/[0.06]"></div>
+
+          {/* کربوهیدرات */}
+          <div className="flex-1 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <Wheat className="w-3 h-3 text-[#ffdb40]" />
+                <span className="text-[9px] font-medium text-[#ffdb40]">
+                  کربوهیدرات
+                </span>
+              </div>
+              <span className="text-[11px] font-extrabold text-white tnum">
+                {fa(carbs)}
+                <span className="text-[8px] text-white/50 font-normal">g</span>
+              </span>
+            </div>
+            <div className="h-[3px] w-full bg-white/[0.05] rounded-full overflow-hidden relative">
+              <div
+                className="absolute right-0 top-0 h-full bg-[#ffdb40] rounded-full"
+                style={{ width: `${carbsPct}%` }}
+              ></div>
+            </div>
+          </div>
+
+          <div className="w-[1px] h-8 bg-white/[0.06]"></div>
+
+          {/* قند */}
+          <div className="flex-1 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <Candy className="w-3 h-3 text-[#b072ff]" />
+                <span className="text-[9px] font-medium text-[#b072ff]">
+                  قند
+                </span>
+              </div>
+              <span className="text-[11px] font-extrabold text-white tnum">
+                {fa(sugar)}
+                <span className="text-[8px] text-white/50 font-normal">g</span>
+              </span>
+            </div>
+            <div className="h-[3px] w-full bg-white/[0.05] rounded-full overflow-hidden relative">
+              <div
+                className="absolute right-0 top-0 h-full bg-[#b072ff] rounded-full"
+                style={{ width: `${sugarPct}%` }}
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
 
