@@ -38,7 +38,8 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
   icons: {
     icon: [{ url: "/icons/icon-512.png", type: "image/png" }],
-    // این خط برای آیکون آیفون (Add to Home Screen) اضافه شد
+    // مسیر apple هم به همون آیکون 512 اشاره می‌کنه
+    apple: "/icons/icon-512.png",
   },
 };
 
