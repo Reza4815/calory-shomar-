@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.0",
+    "@mxerf/tappt": "^0.2.0",
     "dotenv": "17.3.1",
     "drizzle-orm": "0.45.2",
     "framer-motion": "^14.9.0",
