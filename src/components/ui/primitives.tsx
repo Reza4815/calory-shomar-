@@ -358,23 +358,9 @@ export function PageBody({
       initial={reduce ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      // حذف max-w برای فول اسکرین شدن
-      className={cx(
-        "relative w-full min-h-screen bg-[#0b0c10] overflow-hidden pb-36 pt-[env(safe-area-inset-top)]",
-        className,
-      )}
+      className={cx("relative w-full flex-1 flex flex-col", className)}
     >
-      {/* Ambient glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden transform-gpu"
-      >
-        <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px] will-change-transform" />
-        <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px] will-change-transform" />
-        <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px] will-change-transform" />
-      </div>
-
-      <div className="relative z-10 px-4 w-full">{children}</div>
+      <div className="relative z-10 px-4 w-full flex-1">{children}</div>
     </motion.main>
   );
 }

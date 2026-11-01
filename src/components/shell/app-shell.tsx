@@ -67,22 +67,21 @@ export function AppShell({ children }: { children: ReactNode }) {
   const ready = mounted && hydrated;
 
   return (
-    <div className="min-h-[100dvh] w-full bg-[#0b0c10] flex flex-col relative overflow-hidden">
-      {/* لایه گرادیانت ثابت */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          background: `radial-gradient(60% 42% at 50% 0%, rgba(32, 201, 138, 0.07), transparent 70%), radial-gradient(40% 34% at 82% 88%, rgba(85, 153, 242, 0.05), transparent 70%)`,
-        }}
-      />
+    <div className="relative flex flex-col min-h-[100dvh] bg-[#0b0c10] overflow-x-hidden">
+      {/* گلوهای ثابت پس‌زمینه */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px]" />
+        <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px]" />
+        <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px]" />
+      </div>
 
       {ready && (
         <main
-          className="relative z-10 w-full flex-1"
+          className="relative z-10 flex-1 flex flex-col w-full"
           style={{
-            // استفاده از margin برای فاصله از بالا و پایین
-            marginTop: "env(safe-area-inset-top, 0px)",
-            marginBottom: "calc(env(safe-area-inset-bottom, 0px) + 90px)",
+            paddingTop: "env(safe-area-inset-top, 0px)",
+            /* 100px فاصله برای اینکه محتوا نره زیر منو */
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 100px)",
           }}
         >
           {children}

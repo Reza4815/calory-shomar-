@@ -12,8 +12,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, type ReactNode } from "react";
-import { HeaderSpacer, ScreenHeader } from "@/components/shell/screen-header";
+import { useMemo } from "react";
+import { ScreenHeader } from "@/components/shell/screen-header";
 import { Card, IconBadge } from "@/components/ui/primitives";
 import { clamp, dayKey, fa, faFullDate, faTime } from "@/lib/format";
 import {
@@ -182,56 +182,41 @@ export default function MealsPage() {
   const progress = clamp(totals.calories / Math.max(1, dailyCalories), 0, 1);
 
   return (
-    <>
+    <div className="w-full flex-1 flex flex-col relative">
       <ScreenHeader title="وعده‌های امروز" subtitle={faFullDate()} />
-      <HeaderSpacer />
-
-      {/* فول اسکرین کردن صفحه */}
-      <div className="w-full min-h-screen bg-[#0b0c10] relative overflow-hidden pb-36 pt-[env(safe-area-inset-top)]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden transform-gpu"
-        >
-          <div className="absolute -top-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#00d287] opacity-15 blur-[120px] will-change-transform" />
-          <div className="absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-[#ff3b30] opacity-15 blur-[120px] will-change-transform" />
-          <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-[#b072ff] opacity-20 blur-[120px] will-change-transform" />
-        </div>
-
-        {/* کلاس max-w-md mx-auto حذف شد تا در حالت وب فول اسکرین شود */}
-        <main className="relative z-10 w-full px-4 pt-4">
-          <Card glow="green" className="flex items-center gap-4 p-5">
-            <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
-              <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-[15px] font-bold">کالری امروز</h2>
-              <p className="mt-1 text-[12px] font-extrabold tnum">
-                <span className="text-primary">{fa(totals.calories)}</span>
-                <span className="text-sub"> از {fa(dailyCalories)} کالری</span>
-              </p>
-              <p className="mt-0.5 text-[10.5px] text-sub tnum">
-                {remaining > 0
-                  ? `${fa(remaining)} کالری باقی‌مانده`
-                  : "هدف کالری امروز کامل شد"}
-              </p>
-            </div>
-            <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
-              {fa(Math.round(progress * 100))}٪
-            </span>
-          </Card>
-
-          <div className="mt-4 space-y-3.5">
-            {MEAL_ORDER.map((meal) => (
-              <MealSection
-                key={meal}
-                meal={meal}
-                entries={entries.filter((e) => e.meal === meal)}
-                dateKey={key}
-              />
-            ))}
+      <div className="relative z-10 w-full px-4 pt-4 pb-4 flex-1">
+        <Card glow="green" className="flex items-center gap-4 p-5">
+          <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/[0.04]">
+            <Flame className="h-6 w-6 text-[#ff5c5c]" strokeWidth={2.2} />
           </div>
-        </main>
+          <div className="flex-1">
+            <h2 className="text-[15px] font-bold">کالری امروز</h2>
+            <p className="mt-1 text-[12px] font-extrabold tnum">
+              <span className="text-primary">{fa(totals.calories)}</span>
+              <span className="text-sub"> از {fa(dailyCalories)} کالری</span>
+            </p>
+            <p className="mt-0.5 text-[10.5px] text-sub tnum">
+              {remaining > 0
+                ? `${fa(remaining)} کالری باقی‌مانده`
+                : "هدف کالری امروز کامل شد"}
+            </p>
+          </div>
+          <span className="shrink-0 text-[12px] font-extrabold text-primary tnum">
+            {fa(Math.round(progress * 100))}٪
+          </span>
+        </Card>
+
+        <div className="mt-4 space-y-3.5">
+          {MEAL_ORDER.map((meal) => (
+            <MealSection
+              key={meal}
+              meal={meal}
+              entries={entries.filter((e) => e.meal === meal)}
+              dateKey={key}
+            />
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   );
 }

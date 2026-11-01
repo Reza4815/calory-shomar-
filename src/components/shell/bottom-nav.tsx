@@ -1,7 +1,13 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ChefHat, Home, UserRound, Utensils, UtensilsCrossed } from "lucide-react";
+import {
+  ChefHat,
+  Home,
+  UserRound,
+  Utensils,
+  UtensilsCrossed,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cx } from "@/lib/cx";
@@ -9,10 +15,30 @@ import { FabMenu } from "./fab-menu";
 
 const ITEMS = [
   { href: "/", label: "خانه", icon: Home, match: (p: string) => p === "/" },
-  { href: "/plans", label: "برنامه", icon: UtensilsCrossed, match: (p: string) => p.startsWith("/plans") },
-  { href: "/recipes", label: "دستور پخت", icon: ChefHat, match: (p: string) => p.startsWith("/recipes") },
-  { href: "/meals", label: "وعده‌ها", icon: Utensils, match: (p: string) => p.startsWith("/meals") },
-  { href: "/profile", label: "پروفایل", icon: UserRound, match: (p: string) => p.startsWith("/profile") },
+  {
+    href: "/plans",
+    label: "برنامه",
+    icon: UtensilsCrossed,
+    match: (p: string) => p.startsWith("/plans"),
+  },
+  {
+    href: "/recipes",
+    label: "دستور پخت",
+    icon: ChefHat,
+    match: (p: string) => p.startsWith("/recipes"),
+  },
+  {
+    href: "/meals",
+    label: "وعده‌ها",
+    icon: Utensils,
+    match: (p: string) => p.startsWith("/meals"),
+  },
+  {
+    href: "/profile",
+    label: "پروفایل",
+    icon: UserRound,
+    match: (p: string) => p.startsWith("/profile"),
+  },
 ];
 
 export function BottomNav() {
@@ -22,11 +48,12 @@ export function BottomNav() {
   return (
     <nav
       aria-label="ناوبری اصلی"
-      className="frame-fixed bottom-0 z-40"
-      style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+      className="fixed inset-x-0 bottom-0 z-40 w-full flex justify-center pointer-events-none"
+      style={{
+        paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+      }}
     >
-      <div className="flex items-center gap-3 px-4">
-        {/* FAB renders first so it sits on the physical right in RTL */}
+      <div className="flex w-full max-w-[430px] items-center gap-3 px-4 pointer-events-auto">
         <FabMenu />
 
         <div className="flex flex-1 items-center rounded-full border border-border/70 bg-card/85 p-1.5 shadow-[0_14px_36px_rgba(0,0,0,0.45)] backdrop-blur-xl">
@@ -46,17 +73,26 @@ export function BottomNav() {
                     layoutId="nav-pill"
                     className="absolute inset-0 rounded-full bg-elevated ring-1 ring-primary/30"
                     style={{ boxShadow: "0 0 20px rgba(32,201,138,0.16)" }}
-                    transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 32 }}
+                    transition={
+                      reduce
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 420, damping: 32 }
+                    }
                   />
                 )}
                 <Icon
-                  className={cx("relative z-10 h-[21px] w-[21px] transition-colors", active ? "text-primary" : "text-muted")}
+                  className={cx(
+                    "relative z-10 h-[21px] w-[21px] transition-colors",
+                    active ? "text-primary" : "text-muted",
+                  )}
                   strokeWidth={active ? 2.4 : 2}
                 />
                 <span
                   className={cx(
                     "relative z-10 text-[10px] transition-colors",
-                    active ? "font-bold text-primary" : "font-medium text-muted"
+                    active
+                      ? "font-bold text-primary"
+                      : "font-medium text-muted",
                   )}
                 >
                   {item.label}
