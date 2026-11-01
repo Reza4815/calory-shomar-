@@ -17,13 +17,10 @@
   --color-muted: #656e7b;
 
   --font-sans: var(--font-vazirmatn), "Segoe UI", Tahoma, sans-serif;
-
   --shadow-glow-green: 0 0 44px rgba(32, 201, 138, 0.2);
   --shadow-glow-blue: 0 0 44px rgba(85, 153, 242, 0.16);
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
-
   --radius-cozy: 22px;
-
   --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
 }
 
@@ -39,30 +36,30 @@
   }
 }
 
+/* 🟢 تنظیمات پایه صفحه (حل مشکل سیاهی پایین و کشیدگی) */
 html {
   direction: rtl;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background-color: var(--color-bg);
+  background-color: #0b0c10 !important;
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--color-bg);
+  background-color: #0b0c10 !important;
   color: var(--color-text);
   font-family: var(--font-sans);
-  overscroll-behavior-y: none;
   margin: 0;
   padding: 0;
-  /* استفاده از 100vh و 100dvh برای پر کردن دقیق صفحه در آیفون */
   min-height: 100vh;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  overscroll-behavior-y: none;
   touch-action: manipulation;
 }
 
+/* بقیه استایل‌های شما دست نخورده باقی می‌مونن */
 .app-frame {
   position: relative;
   width: 100%;
@@ -70,9 +67,6 @@ body {
   margin-inline: auto;
   min-height: 100dvh;
   background: var(--color-bg);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }
 
 @media (min-width: 520px) {
@@ -110,7 +104,6 @@ body {
 .tnum {
   font-variant-numeric: tabular-nums;
 }
-
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -128,7 +121,6 @@ input::placeholder,
 textarea::placeholder {
   color: var(--color-muted);
 }
-
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -143,7 +135,6 @@ input[type="number"] {
   outline: 2px solid rgba(32, 201, 138, 0.55);
   outline-offset: 2px;
 }
-
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }

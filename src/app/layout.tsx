@@ -32,7 +32,6 @@ export const metadata: Metadata = {
   applicationName: "رفا",
   appleWebApp: {
     capable: true,
-    // این گزینه حیاتی است: پس‌زمینه نوار وضعیت را شفاف می‌کند تا با سایت یکی شود
     statusBarStyle: "black-translucent",
     title: "رفا",
   },
@@ -45,16 +44,16 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: "cover", // حیاتی برای آیفون
+  viewportFit: "cover",
   interactiveWidget: "resizes-content",
-  themeColor: "#0b0c11",
+  themeColor: "#0b0c10",
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fa" dir="rtl" className={vazirmatn.variable}>
-      <body className="bg-bg text-text antialiased">
+      <body className="bg-[#0b0c10] text-text antialiased">
         <AppShell>{children}</AppShell>
       </body>
     </html>

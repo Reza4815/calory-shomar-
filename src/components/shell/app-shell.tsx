@@ -67,18 +67,28 @@ export function AppShell({ children }: { children: ReactNode }) {
   const ready = mounted && hydrated;
 
   return (
-    <div className="w-full min-h-[100dvh] bg-[#0b0c10] flex flex-col relative">
+    <div className="min-h-[100dvh] w-full bg-[#0b0c10] flex flex-col relative overflow-hidden">
+      {/* لایه گرادیانت ثابت */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background: `radial-gradient(60% 42% at 50% 0%, rgba(32, 201, 138, 0.07), transparent 70%), radial-gradient(40% 34% at 82% 88%, rgba(85, 153, 242, 0.05), transparent 70%)`,
+        }}
+      />
+
       {ready && (
         <main
-          className="flex-1 w-full relative pb-[100px]"
+          className="relative z-10 w-full flex-1"
           style={{
-            // ترکیب safe-area با یک فاصله استاندارد برای زیبایی بیشتر
-            paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)",
+            // استفاده از margin برای فاصله از بالا و پایین
+            marginTop: "env(safe-area-inset-top, 0px)",
+            marginBottom: "calc(env(safe-area-inset-bottom, 0px) + 90px)",
           }}
         >
           {children}
         </main>
       )}
+
       <BottomNav />
       <Toasts />
       <AnimatePresence>{!ready && <Splash key="splash" />}</AnimatePresence>
